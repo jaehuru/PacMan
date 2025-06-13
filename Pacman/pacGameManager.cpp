@@ -28,7 +28,7 @@ namespace pac
 		::huru::SceneManager::CreateScene<PlayScene>(L"PlayScene");
 		::huru::SceneManager::CreateScene<ToolScene>(L"ToolScene");
 
-		::huru::SceneManager::LoadScene(L"PlayScene");
+		::huru::SceneManager::LoadScene(L"ToolScene");
 		// 씬 등록 및 초기화 코드
 	}
 
