@@ -1,42 +1,90 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="리소스 파일">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="_Config">
+      <UniqueIdentifier>{5882c405-a8c1-40b9-a387-19a0df0d9f52}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource">
-      <UniqueIdentifier>{e4723357-4529-4f79-b603-1e84ca7c98ff}</UniqueIdentifier>
+    <Filter Include="public">
+      <UniqueIdentifier>{3dae081a-b4b5-47c4-8273-ac863744ca99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="private">
+      <UniqueIdentifier>{86443bd3-a9a4-4e71-9c70-09a77976a57f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\Scenes">
+      <UniqueIdentifier>{fa89bd4e-94fa-476e-9c86-977271b92e2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="private\Scenes">
+      <UniqueIdentifier>{80cdde8d-8959-4840-aee0-4e5cb2391c38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="private\Scripts">
+      <UniqueIdentifier>{9904c551-3973-4992-bed2-521d53285640}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\Contents">
+      <UniqueIdentifier>{a11e922c-4641-4e1c-ad5a-c1fead835850}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="private\Contents">
+      <UniqueIdentifier>{09255688-87b8-410f-8c08-29cba4ae0aa6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\Scripts">
+      <UniqueIdentifier>{d08584dd-c461-4570-b702-731276298675}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\GameManager">
+      <UniqueIdentifier>{85e1f298-f520-40b4-b392-e57cfcfe1e8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="private\GameManager">
+      <UniqueIdentifier>{fa57ffb4-002c-4bbc-96c1-8f770655c08a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="framework.h">
-      <Filter>Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Pacman.h">
-      <Filter>Resource</Filter>
-    </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>Resource</Filter>
+      <Filter>_Config</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>Resource</Filter>
+      <Filter>_Config</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Pacman.rc">
-      <Filter>리소스 파일</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="small.ico">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="Pacman.ico">
-      <Filter>리소스 파일</Filter>
-    </Image>
+    <ClInclude Include="framework.h">
+      <Filter>_Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Pacman.h">
+      <Filter>_Config</Filter>
+    </ClInclude>
+    <ClInclude Include="pacPlayScene.h">
+      <Filter>public\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="pacToolScene.h">
+      <Filter>public\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="pacCameraScript.h">
+      <Filter>public\Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="pacTile.h">
+      <Filter>public\Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="pacGameManager.h">
+      <Filter>public\GameManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="pacToolScene.cpp">
+      <Filter>private\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="pacPlayScene.cpp">
+      <Filter>private\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="pacCameraScript.cpp">
+      <Filter>private\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="pacTile.cpp">
+      <Filter>private\Contents</Filter>
+    </ClCompile>
+    <ClCompile Include="pacGameManager.cpp">
+      <Filter>private\GameManager</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Pacman.rc">
+      <Filter>_Config</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

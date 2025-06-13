@@ -76,11 +76,24 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)JaehuruEngine\Engine\public;$(SolutionDir)..\JaehuruEngine\External\FMOD\lib\x64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\JaehuruEngine\External\FMOD\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fmod_vc.lib;fmodstudio_vc.lib;fmodL_vc.lib;fmodstudioL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>IF "$(Configuration)"=="Debug" (
+    xcopy /Y /D "$(SolutionDir)..\JaehuruEngine\External\FMOD\lib\x64\fmodL.dll" "$(OutDir)"
+    xcopy /Y /D "$(SolutionDir)..\JaehuruEngine\External\FMOD\lib\x64\fmodstudioL.dll" "$(OutDir)"
+) ELSE (
+    xcopy /Y /D "$(SolutionDir)..\JaehuruEngine\External\FMOD\lib\x64\fmod.dll" "$(OutDir)"
+    xcopy /Y /D "$(SolutionDir)..\JaehuruEngine\External\FMOD\lib\x64\fmodstudio.dll" "$(OutDir)"
+)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -90,11 +103,24 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)JaehuruEngine\Engine\public;$(SolutionDir)..\JaehuruEngine\External\FMOD\lib\x64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\JaehuruEngine\External\FMOD\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fmod_vc.lib;fmodstudio_vc.lib;fmodL_vc.lib;fmodstudioL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>IF "$(Configuration)"=="Debug" (
+    xcopy /Y /D "$(SolutionDir)..\JaehuruEngine\External\FMOD\lib\x64\fmodL.dll" "$(OutDir)"
+    xcopy /Y /D "$(SolutionDir)..\JaehuruEngine\External\FMOD\lib\x64\fmodstudioL.dll" "$(OutDir)"
+) ELSE (
+    xcopy /Y /D "$(SolutionDir)..\JaehuruEngine\External\FMOD\lib\x64\fmod.dll" "$(OutDir)"
+    xcopy /Y /D "$(SolutionDir)..\JaehuruEngine\External\FMOD\lib\x64\fmodstudio.dll" "$(OutDir)"
+)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -102,11 +128,24 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)JaehuruEngine\Engine\public;$(SolutionDir)..\JaehuruEngine\External\FMOD\lib\x64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\JaehuruEngine\External\FMOD\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fmod_vc.lib;fmodstudio_vc.lib;fmodL_vc.lib;fmodstudioL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>IF "$(Configuration)"=="Debug" (
+    xcopy /Y /D "$(SolutionDir)..\JaehuruEngine\External\FMOD\lib\x64\fmodL.dll" "$(OutDir)"
+    xcopy /Y /D "$(SolutionDir)..\JaehuruEngine\External\FMOD\lib\x64\fmodstudioL.dll" "$(OutDir)"
+) ELSE (
+    xcopy /Y /D "$(SolutionDir)..\JaehuruEngine\External\FMOD\lib\x64\fmod.dll" "$(OutDir)"
+    xcopy /Y /D "$(SolutionDir)..\JaehuruEngine\External\FMOD\lib\x64\fmodstudio.dll" "$(OutDir)"
+)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -116,27 +155,51 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)JaehuruEngine\Engine\public;$(SolutionDir)..\JaehuruEngine\External\FMOD\lib\x64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\JaehuruEngine\External\FMOD\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fmod_vc.lib;fmodstudio_vc.lib;fmodL_vc.lib;fmodstudioL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>IF "$(Configuration)"=="Debug" (
+    xcopy /Y /D "$(SolutionDir)..\JaehuruEngine\External\FMOD\lib\x64\fmodL.dll" "$(OutDir)"
+    xcopy /Y /D "$(SolutionDir)..\JaehuruEngine\External\FMOD\lib\x64\fmodstudioL.dll" "$(OutDir)"
+) ELSE (
+    xcopy /Y /D "$(SolutionDir)..\JaehuruEngine\External\FMOD\lib\x64\fmod.dll" "$(OutDir)"
+    xcopy /Y /D "$(SolutionDir)..\JaehuruEngine\External\FMOD\lib\x64\fmodstudio.dll" "$(OutDir)"
+)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="pacCameraScript.h" />
+    <ClInclude Include="pacGameManager.h" />
     <ClInclude Include="Pacman.h" />
+    <ClInclude Include="pacPlayScene.h" />
+    <ClInclude Include="pacTile.h" />
+    <ClInclude Include="pacToolScene.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="pacCameraScript.cpp" />
+    <ClCompile Include="pacGameManager.cpp" />
+    <ClCompile Include="pacPlayScene.cpp" />
+    <ClCompile Include="pacTile.cpp" />
+    <ClCompile Include="pacToolScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Pacman.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Pacman.ico" />
-    <Image Include="small.ico" />
+    <ProjectReference Include="..\..\JaehuruEngine\Engine\Engine.vcxproj">
+      <Project>{d8cf4219-3dfe-4ac0-8254-6144e85d0fef}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
