@@ -35,6 +35,5 @@ namespace pac
 
     private:
         ::huru::graphics::Texture* mSpriteTexture = nullptr;
-        const std::wstring& mapFilePath = L"..\\Resources\\PacmanMap.tile";
     };
 }

@@ -34,7 +34,7 @@ namespace pac
 
 	void GameManager::LoadMap()
 	{
-		LoadMapFile(mapFilePath, mSpriteTexture);
+		LoadMapFile(L"..\\Resources\\PacmanMap.tile", mSpriteTexture);
 	}
 
 	void GameManager::LoadMapFile(const std::wstring& filePath, ::huru::graphics::Texture* texture)
