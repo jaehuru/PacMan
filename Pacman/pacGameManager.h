@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common/CommonInclude.h"
+#include "pacEnum.h"
 
 namespace huru::graphics { class Texture; }
 
@@ -22,9 +23,10 @@ namespace pac
         void        LoadScenes();
         void        LoadMap();
 
-        void        LoadMapFile(const std::wstring& filePath, ::huru::graphics::Texture* texture);
+        void        LoadMapFile(const wstring& filePath, graphics::Texture* texture);
 
-        ::huru::graphics::Texture* GetSpriteTexture() const { return mSpriteTexture; }
+        graphics::Texture* GetSpriteTexture() const { return mSpriteTexture; }
+        graphics::Texture* GetPacmanTexture() const { return mPacmanTexture; }
 
     private:
         GameManager() = default;
@@ -34,6 +36,7 @@ namespace pac
         GameManager& operator=(const GameManager&) = delete;
 
     private:
-        ::huru::graphics::Texture* mSpriteTexture = nullptr;
+        graphics::Texture* mSpriteTexture = nullptr;
+        graphics::Texture* mPacmanTexture = nullptr;
     };
 }

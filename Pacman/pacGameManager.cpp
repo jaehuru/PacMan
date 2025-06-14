@@ -7,28 +7,37 @@
 #include "Resource/huruResources.h" 
 #include "Scene/huruSceneManager.h"
 #include "Resource/huruTexture.h"
-#include <Component/TileMapRenderer/huruTileMapRenderer.h>
-#include <Object/huruObject.h>
+#include "Component/TileMapRenderer/huruTileMapRenderer.h"
+#include "Object/huruObject.h"
+#include "Collision/huruCollisionManager.h"
 
 namespace pac
 {
 	void GameManager::Initialize()
 	{
 		LoadResources();
+
+		CollisionManager::CollisionLayerCheck(
+			ToEngineLayerType(ePacLayerType::Player),
+			ToEngineLayerType(ePacLayerType::Tile),
+			true
+		);
+
 		LoadScenes();
 	}
 
 	void GameManager::LoadResources()
 	{
-		mSpriteTexture = ::huru::Resources::Load<huru::graphics::Texture>(L"Sprite", L"..\\Resources\\PacmanSprite.bmp");
+		mSpriteTexture = Resources::Load<graphics::Texture>(L"Sprite", L"..\\Resources\\PacmanSprite.bmp");
+		mPacmanTexture = Resources::Load<graphics::Texture>(L"Pacman", L"..\\Resources\\img\\pacman\\1.png");
 	}
 
 	void GameManager::LoadScenes()
 	{
-		::huru::SceneManager::CreateScene<PlayScene>(L"PlayScene");
-		::huru::SceneManager::CreateScene<ToolScene>(L"ToolScene");
+		SceneManager::CreateScene<PlayScene>(L"PlayScene");
+		SceneManager::CreateScene<ToolScene>(L"ToolScene");
 
-		::huru::SceneManager::LoadScene(L"ToolScene");
+		SceneManager::LoadScene(L"PlayScene");
 		// 씬 등록 및 초기화 코드
 	}
 
@@ -37,14 +46,14 @@ namespace pac
 		LoadMapFile(L"..\\Resources\\PacmanMap.tile", mSpriteTexture);
 	}
 
-	void GameManager::LoadMapFile(const std::wstring& filePath, ::huru::graphics::Texture* texture)
+	void GameManager::LoadMapFile(const wstring& filePath, graphics::Texture* texture)
 	{
 		FILE* pFile = nullptr;
 		_wfopen_s(&pFile, filePath.c_str(), L"rb");
 
 		if (!pFile)
 		{
-			std::wstring msg = L"Failed to open file: " + filePath;
+			wstring msg = L"Failed to open file: " + filePath;
 			MessageBox(nullptr, msg.c_str(), L"Error", MB_OK);
 			return;
 		}
@@ -59,10 +68,10 @@ namespace pac
 			if (fread(&posX, sizeof(int), 1, pFile) != 1) break;
 			if (fread(&posY, sizeof(int), 1, pFile) != 1) break;
 
-			Tile* tile = ::huru::object::Instantiate<Tile>(::huru::enums::eLayerType::Tile, ::huru::math::Vector2(posX, posY));
-			::huru::TileMapRenderer* tmr = tile->AddComponent<::huru::TileMapRenderer>();
+			Tile* tile = object::Instantiate<Tile>(ToEngineLayerType(ePacLayerType::Tile), Vector2(posX, posY));
+			TileMapRenderer* tmr = tile->AddComponent<TileMapRenderer>();
 			tmr->SetTexture(texture);
-			tmr->SetIndex(::huru::math::Vector2(idxX, idxY));
+			tmr->SetIndex(Vector2(idxX, idxY));
 		}
 
 		fclose(pFile);

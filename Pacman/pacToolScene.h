@@ -8,7 +8,7 @@ namespace pac
 {
 	class Tile;
 
-	class ToolScene : public ::huru::Scene
+	class ToolScene : public Scene
 	{
 	public:
 		ToolScene();
@@ -26,11 +26,11 @@ namespace pac
 		void	Load();
 
 	private:
+		void	HandleInput();
 		void	DrawTileGrid(HDC hdc);
-		void	ClearDeadTiles();
 
 	private:
-		std::vector<Tile*> mTiles;
+		vector<Tile*> mTiles;
 	};
 }
 

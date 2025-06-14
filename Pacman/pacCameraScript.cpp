@@ -23,24 +23,24 @@ namespace pac
 
 	void CameraScript::Update()
 	{
-		::huru::Transform* tr = GetOwner()->GetComponent<::huru::Transform>();
-		::huru::math::Vector2 pos = tr->GetPosition();
+		Transform* tr = GetOwner()->GetComponent<Transform>();
+		Vector2 pos = tr->GetPosition();
 
-		if (::huru::Input::GetKey(::huru::eKeyCode::Right))
+		if (Input::GetKey(eKeyCode::Right))
 		{
-			pos.x += 100.0f * ::huru::Time::DeltaTime();
+			pos.x += 100.0f * Time::DeltaTime();
 		}
-		if (::huru::Input::GetKey(::huru::eKeyCode::Left))
+		if (Input::GetKey(eKeyCode::Left))
 		{
-			pos.x -= 100.0f * ::huru::Time::DeltaTime();
+			pos.x -= 100.0f * Time::DeltaTime();
 		}
-		if (::huru::Input::GetKey(::huru::eKeyCode::Up))
+		if (Input::GetKey(eKeyCode::Up))
 		{
-			pos.y -= 100.0f * ::huru::Time::DeltaTime();
+			pos.y -= 100.0f * Time::DeltaTime();
 		}
-		if (::huru::Input::GetKey(::huru::eKeyCode::Down))
+		if (Input::GetKey(eKeyCode::Down))
 		{
-			pos.y += 100.0f * ::huru::Time::DeltaTime();
+			pos.y += 100.0f * Time::DeltaTime();
 		}
 
 		tr->SetPosition(pos);

@@ -1,11 +1,10 @@
 #pragma once
 
 #include "Component/Script/huruScript.h"
-#include "Component/Transform/huruTransform.h"
 
 namespace pac
 {
-	class CameraScript : public ::huru::Script
+	class CameraScript : public Script
 	{
 	public:
 		CameraScript();

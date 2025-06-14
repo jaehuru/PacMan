@@ -1,12 +1,13 @@
 #pragma once
 
 #include "Scene/huruScene.h"
+#include "Common/CommonInclude.h"
 
 namespace pac
 {
 	class Player;
 
-	class PlayScene : public ::huru::Scene
+	class PlayScene : public Scene
 	{
 	public:
 		PlayScene();

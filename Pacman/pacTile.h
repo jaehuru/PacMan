@@ -4,9 +4,12 @@
 
 namespace pac
 {
-	class Tile : public ::huru::GameObject
+	class Tile : public GameObject
 	{
 	public:
+		Tile();
+		~Tile();
+
 		void Initialize() override;
 		void Update() override;
 		void LateUpdate() override;
@@ -21,12 +24,11 @@ namespace pac
 		int GetIndexY() const { return mIndexY; }
 
 	public:
-		static ::huru::math::Vector2 Size;
-		static ::huru::math::Vector2 Scale;
+		static Vector2 Size;
+		static Vector2 Scale;
 
 	private:
-		int mIndexX = -1;
-		int mIndexY = -1;
-
+		int mIndexX;
+		int mIndexY;
 	};
 }

@@ -2,6 +2,8 @@
 #include "pacPlayScene.h"
 #include "pacGameManager.h"
 #include "pacToolScene.h"
+#include "pacPlayer.h"
+#include "pacPlayerScript.h"
 // Engine 
 #include "../JaehuruEngine/Engine/public/Component/Camera/huruCamera.h"
 #include "../JaehuruEngine/Engine/public/GameObject/huruGameObject.h"
@@ -25,17 +27,13 @@ namespace pac
 
 	void PlayScene::Initialize()
 	{
-		//MapLoad
+		GameManager::GetInstance().LoadResources();
 		GameManager::GetInstance().LoadMap();
 
-		//Camera
-		::huru::GameObject* camera = ::huru::object::Instantiate<huru::GameObject>(::huru::enums::eLayerType::Particle, ::huru::math::Vector2(344.0f, 442.0f));
-		::huru::Camera* cameraComp = camera->AddComponent<::huru::Camera>();
-		::huru::renderer::mainCamera = cameraComp;
-
-
-
 		// Player
+		GameObject* player = object::Instantiate<Player>(
+				ToEngineLayerType(ePacLayerType::Player),
+				Vector2(580.0f, 330.0f));
 
 
 
