@@ -177,6 +177,7 @@
   <ItemGroup>
     <ClInclude Include="framework.h" />
     <ClInclude Include="pacCameraScript.h" />
+    <ClInclude Include="pacDefine.h" />
     <ClInclude Include="pacEnum.h" />
     <ClInclude Include="pacGameManager.h" />
     <ClInclude Include="Pacman.h" />
@@ -184,7 +185,6 @@
     <ClInclude Include="pacPlayerScript.h" />
     <ClInclude Include="pacPlayScene.h" />
     <ClInclude Include="pacTile.h" />
-    <ClInclude Include="pacTileScript.h" />
     <ClInclude Include="pacToolScene.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
@@ -197,7 +197,6 @@
     <ClCompile Include="pacPlayerScript.cpp" />
     <ClCompile Include="pacPlayScene.cpp" />
     <ClCompile Include="pacTile.cpp" />
-    <ClCompile Include="pacTileScript.cpp" />
     <ClCompile Include="pacToolScene.cpp" />
   </ItemGroup>
   <ItemGroup>

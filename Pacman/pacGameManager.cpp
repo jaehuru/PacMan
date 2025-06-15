@@ -48,6 +48,12 @@ namespace pac
 
 	void GameManager::LoadMapFile(const wstring& filePath, graphics::Texture* texture)
 	{
+		// 기존 타일 초기화
+		for (Tile* tile : mTileMap)
+			object::Destroy(tile);
+		mTileMap.clear();
+		mTileMap.resize(define::MaxMapWidth * define::MaxMapHeight, nullptr);
+
 		FILE* pFile = nullptr;
 		_wfopen_s(&pFile, filePath.c_str(), L"rb");
 
@@ -60,18 +66,35 @@ namespace pac
 
 		while (true)
 		{
-			int idxX = 0, idxY = 0;
-			int posX = 0, posY = 0;
+			int tool_idxX = 0, tool_idxY = 0;
+			int tool_posX = 0, tool_posY = 0;
 
-			if (fread(&idxX, sizeof(int), 1, pFile) != 1) break;
-			if (fread(&idxY, sizeof(int), 1, pFile) != 1) break;
-			if (fread(&posX, sizeof(int), 1, pFile) != 1) break;
-			if (fread(&posY, sizeof(int), 1, pFile) != 1) break;
+			if (fread(&tool_idxX, sizeof(int), 1, pFile) != 1) break;
+			if (fread(&tool_idxY, sizeof(int), 1, pFile) != 1) break;
+			if (fread(&tool_posX, sizeof(int), 1, pFile) != 1) break;
+			if (fread(&tool_posY, sizeof(int), 1, pFile) != 1) break;
 
-			Tile* tile = object::Instantiate<Tile>(ToEngineLayerType(ePacLayerType::Tile), Vector2(posX, posY));
+			Tile* tile = object::Instantiate<Tile>(ToEngineLayerType(ePacLayerType::Tile), Vector2(tool_posX, tool_posY));
+			int tileTypeInt = 0;
+			if (fread(&tileTypeInt, sizeof(int), 1, pFile) != 1) break;
+			tile->SetTileType(static_cast<Tile::eTileType>(tileTypeInt));
+
+			int tileIdxX = tool_posX / Tile::Size.x;
+			int tileIdxY = tool_posY / Tile::Size.y;
+			int linearIndex = define::GetLinearIndex(tileIdxX, tileIdxY);
+
 			TileMapRenderer* tmr = tile->AddComponent<TileMapRenderer>();
 			tmr->SetTexture(texture);
-			tmr->SetIndex(Vector2(idxX, idxY));
+			tmr->SetSize(Tile::Size);
+			tmr->SetScale(Tile::Scale);
+			tmr->SetIndex(Vector2(tool_idxX, tool_idxY));
+
+			tile->SetIndexPosition(tileIdxX, tileIdxY);
+
+			if (linearIndex >= 0 && linearIndex < static_cast<int>(mTileMap.size()))
+			{
+				mTileMap[linearIndex] = tile;
+			}
 		}
 
 		fclose(pFile);

@@ -7,6 +7,14 @@ namespace pac
 	class Tile : public GameObject
 	{
 	public:
+		enum class eTileType
+		{
+			Path,
+			Wall,
+			Jail,
+			Potal
+		};
+
 		Tile();
 		~Tile();
 
@@ -20,8 +28,12 @@ namespace pac
 			mIndexX = x;
 			mIndexY = y;
 		}
+		Vector2 GetIndexPosition() const { return Vector2 (mIndexX, mIndexY); }
 		int GetIndexX() const { return mIndexX; }
 		int GetIndexY() const { return mIndexY; }
+
+		void SetTileType(eTileType type) { mTileType = type; }
+		eTileType GetTileType() const { return mTileType; }
 
 	public:
 		static Vector2 Size;
@@ -30,5 +42,7 @@ namespace pac
 	private:
 		int mIndexX;
 		int mIndexY;
+
+		eTileType mTileType;
 	};
 }

@@ -2,7 +2,6 @@
 #include "pacToolScene.h"
 #include "pacGameManager.h"
 #include "pacCameraScript.h"
-#include "pacTile.h"
 // Engine
 #include "HighLevelInterface/huruApplication.h"
 #include "Component/TileMapRenderer/huruTileMapRenderer.h"
@@ -14,6 +13,7 @@
 #include "Component/Transform/huruTransform.h"
 
 extern huru::Application application;
+
 
 namespace pac
 {
@@ -52,9 +52,9 @@ namespace pac
 
 	void ToolScene::Render(HDC hdc)
 	{
-		Scene::Render(hdc);
-
 		DrawTileGrid(hdc);
+		TileTypeTextOut(hdc);
+		Scene::Render(hdc);
 	}
 
 	void ToolScene::OnEnter()
@@ -93,8 +93,11 @@ namespace pac
 		FILE* pFile = nullptr;
 		_wfopen_s(&pFile, szFilePath, L"wb");
 
-		for (Tile* tile : mTiles)
+		for (Tile* tile : mTileMap)
 		{
+			if (tile == nullptr)
+				continue;
+
 			TileMapRenderer* tmr = tile->GetComponent<TileMapRenderer>();
 			Transform* tr = tile->GetComponent<Transform>();
 
@@ -110,6 +113,9 @@ namespace pac
 			fwrite(&x, sizeof(int), 1, pFile);
 			y = position.y;
 			fwrite(&y, sizeof(int), 1, pFile);
+
+			int tileType = static_cast<int>(tile->GetTileType());
+			fwrite(&tileType, sizeof(int), 1, pFile);
 		}
 
 		fclose(pFile);
@@ -144,44 +150,46 @@ namespace pac
 			return;
 
 		// 기존 타일 초기화
-		for (Tile* tile : mTiles)
+		for (Tile* tile : mTileMap)
 			object::Destroy(tile);
-		mTiles.clear();
+		mTileMap.clear();
+
+		mTileMap.resize(define::MaxMapWidth * define::MaxMapHeight, nullptr);
 
 		while (true)
 		{
-			int idxX = 0;
-			int idxY = 0;
+			int tool_idxX = 0;
+			int tool_idxY = 0;
 
-			int posX = 0;
-			int posY = 0;
+			int tool_posX = 0;
+			int tool_posY = 0;
 
-			if (fread(&idxX, sizeof(int), 1, pFile) != 1)
-				break;
-			if (fread(&idxY, sizeof(int), 1, pFile) != 1)
-				break;
-			if (fread(&posX, sizeof(int), 1, pFile) != 1)
-				break;
-			if (fread(&posY, sizeof(int), 1, pFile) != 1)
-				break;
+			if (fread(&tool_idxX, sizeof(int), 1, pFile) != 1) break;
+			if (fread(&tool_idxY, sizeof(int), 1, pFile) != 1) break;
+			if (fread(&tool_posX, sizeof(int), 1, pFile) != 1) break;
+			if (fread(&tool_posY, sizeof(int), 1, pFile) != 1) break;
 
-			Tile* tile = object::Instantiate<Tile>(ToEngineLayerType(ePacLayerType::Tile));
+			Tile* tile = object::Instantiate<Tile>(ToEngineLayerType(ePacLayerType::Tile), Vector2(tool_posX, tool_posY));
+			int tileTypeInt = 0;
+			if (fread(&tileTypeInt, sizeof(int), 1, pFile) != 1) break;
+			tile->SetTileType(static_cast<Tile::eTileType>(tileTypeInt));
 
-			Transform* tr = tile->GetComponent<Transform>();
-			tr->SetPosition(Vector2(posX, posY));
-
-			int tile_idxX = posX / Tile::Size.x;
-			int tile_idxY = posY / Tile::Size.y;
+			int tile_idxX = tool_posX / Tile::Size.x;
+			int tile_idxY = tool_posY / Tile::Size.y;
 
 			TileMapRenderer* tmr = tile->AddComponent<TileMapRenderer>();
 			tmr->SetTexture(GameManager::GetInstance().GetSpriteTexture());
 			tmr->SetSize(Tile::Size);
 			tmr->SetScale(Tile::Scale);
-			tmr->SetIndex(Vector2(idxX, idxY));
+			tmr->SetIndex(Vector2(tool_idxX, tool_idxY));
 
 			tile->SetIndexPosition(tile_idxX, tile_idxY);
 
-			mTiles.push_back(tile);
+			int linearIndex = define::GetLinearIndex(tile_idxX, tile_idxY);
+			if (linearIndex >= 0 && linearIndex < (int)mTileMap.size())
+			{
+				mTileMap[linearIndex] = tile;
+			}
 		}
 		fclose(pFile);
 	}
@@ -192,11 +200,18 @@ namespace pac
 		{
 			Vector2 pos = Input::GetMousePosition();
 			pos = renderer::mainCamera->CalcuateTilePosition(pos);
+			mTileMap.resize(define::MaxMapWidth * define::MaxMapHeight, nullptr);
 
 			if (pos.x >= 0.0f && pos.y >= 0.0f)
 			{
 				int idxX = pos.x / Tile::Size.x;
 				int idxY = pos.y / Tile::Size.y;
+				int linearIndex = define::GetLinearIndex(idxX, idxY);
+				if (linearIndex < 0 || linearIndex >= (int)mTileMap.size())
+					return;
+
+				if (mTileMap[linearIndex] != nullptr)
+					object::Destroy(mTileMap[linearIndex]);
 
 				Tile* tile = object::Instantiate<Tile>(ToEngineLayerType(ePacLayerType::Tile));
 				tile->SetIndexPosition(idxX, idxY);
@@ -214,42 +229,45 @@ namespace pac
 				tmr->SetScale(Tile::Scale);
 				tmr->SetIndex(TileMapRenderer::SelectedIndex);
 
-				mTiles.push_back(tile);
+				tile->SetTileType(mSelectedTileType);
+
+				mTileMap[linearIndex] = tile;
 			}
 		}
 
 		if (Input::GetKeyDown(eKeyCode::RButton))
 		{
-			Vector2 pos = Input::GetMousePosition();
-			pos = renderer::mainCamera->CalcuateTilePosition(pos);
+			Vector2 mousePos = Input::GetMousePosition();
+			Vector2 tilePos = renderer::mainCamera->CalcuateTilePosition(mousePos);
 
-			if (pos.x >= 0.0f && pos.y >= 0.0f)
+			if (tilePos.x >= 0.0f && tilePos.y >= 0.0f)
 			{
-				int idxX = pos.x / Tile::Size.x;
-				int idxY = pos.y / Tile::Size.y;
+				int idxX = static_cast<int>(tilePos.x / Tile::Size.x);
+				int idxY = static_cast<int>(tilePos.y / Tile::Size.y);
+				int linearIndex = define::GetLinearIndex(idxX, idxY);
 
-				for (auto it = mTiles.begin(); it != mTiles.end(); ++it)
+				if (linearIndex >= 0 && linearIndex < (int)mTileMap.size() && mTileMap[linearIndex] != nullptr)
 				{
-					Tile* tile = *it;
-					if (tile->GetIndexX() == idxX && tile->GetIndexY() == idxY)
-					{
-						object::Destroy(tile);  // 엔진에서 제거
-						mTiles.erase(it);              // 리스트에서 제거
-						break;
-					}
+					object::Destroy(mTileMap[linearIndex]);
+					mTileMap[linearIndex] = nullptr;
 				}
 			}
 		}
 
 		if (Input::GetKeyDown(eKeyCode::S))
-		{
 			Save();
-		}
 
 		if (Input::GetKeyDown(eKeyCode::L))
-		{
 			Load();
-		}
+
+		if (Input::GetKeyDown(eKeyCode::Q))
+			mSelectedTileType = Tile::eTileType::Path;
+		else if (Input::GetKeyDown(eKeyCode::W))
+			mSelectedTileType = Tile::eTileType::Wall;
+		else if (Input::GetKeyDown(eKeyCode::E))
+			mSelectedTileType = Tile::eTileType::Jail;
+		else if (Input::GetKeyDown(eKeyCode::R))
+			mSelectedTileType = Tile::eTileType::Potal;
 	}
 
 	void ToolScene::DrawTileGrid(HDC hdc)
@@ -283,6 +301,21 @@ namespace pac
 		// 원래 펜 복원 및 흰색 펜 삭제
 		SelectObject(hdc, hOldPen);
 		DeleteObject(hWhitePen);
+	}
+
+	void ToolScene::TileTypeTextOut(HDC hdc)
+	{
+		wstring typeStr;
+
+		switch (mSelectedTileType)
+		{
+		case Tile::eTileType::Wall:  typeStr = L"Selected: Wall"; break;
+		case Tile::eTileType::Path:  typeStr = L"Selected: Path"; break;
+		case Tile::eTileType::Jail:  typeStr = L"Selected: Jail"; break;
+		case Tile::eTileType::Potal: typeStr = L"Selected: Potal"; break;
+		}
+
+		TextOut(hdc, 10, 10, typeStr.c_str(), (int)typeStr.length());
 	}
 }
 

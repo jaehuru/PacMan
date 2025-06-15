@@ -2,13 +2,16 @@
 
 #include "Common/huruEnums.h"
 
-enum class ePacLayerType : int
+namespace pac
 {
-    None = (int)::huru::enums::eLayerType::None,
-    Background,
-    Tile,
-    Enemy,
-    Player,
-    Particle,
-    Max = (int)::huru::enums::eLayerType::Max
-};
+    enum class ePacLayerType : int
+    {
+        None = (int)::huru::enums::eLayerType::None,
+        Background,
+        Tile,
+        Enemy,
+        Player,
+        Particle,
+        Max = (int)::huru::enums::eLayerType::Max
+    };
+}

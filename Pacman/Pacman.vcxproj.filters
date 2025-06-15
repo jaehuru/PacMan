@@ -34,7 +34,7 @@
     <Filter Include="private\GameManager">
       <UniqueIdentifier>{fa57ffb4-002c-4bbc-96c1-8f770655c08a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="public\Enum">
+    <Filter Include="public\Common">
       <UniqueIdentifier>{a7522250-97a8-47c5-b849-f257025ae7c3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -73,10 +73,10 @@
       <Filter>public\Scripts</Filter>
     </ClInclude>
     <ClInclude Include="pacEnum.h">
-      <Filter>public\Enum</Filter>
+      <Filter>public\Common</Filter>
     </ClInclude>
-    <ClInclude Include="pacTileScript.h">
-      <Filter>public\Scripts</Filter>
+    <ClInclude Include="pacDefine.h">
+      <Filter>public\Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -100,9 +100,6 @@
       <Filter>private\Contents</Filter>
     </ClCompile>
     <ClCompile Include="pacPlayerScript.cpp">
-      <Filter>private\Scripts</Filter>
-    </ClCompile>
-    <ClCompile Include="pacTileScript.cpp">
       <Filter>private\Scripts</Filter>
     </ClCompile>
   </ItemGroup>

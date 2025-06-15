@@ -1,6 +1,5 @@
 // Pacman
 #include "pacTile.h"
-#include "pacTileScript.h"
 #include "pacEnum.h"
 // Engine
 #include "Component/Transform/huruTransform.h"
@@ -14,9 +13,9 @@ namespace pac
 
 	Tile::Tile() :
 		mIndexX(-1),
-		mIndexY(-1)
+		mIndexY(-1),
+		mTileType(eTileType::Path)
 	{
-		AddComponent<TileScript>();
 	}
 
 	Tile::~Tile()
@@ -34,12 +33,6 @@ namespace pac
 			tileMapRenderer->SetSize(Size);  // 외부에서 받아온 타일 크기 할당
 			tileMapRenderer->SetScale(Scale);
 		}
-
-		BoxCollider2D* collider = AddComponent<BoxCollider2D>();
-		collider->SetSize(Size * Scale);  // 타일 크기와 스케일을 곱해서 콜라이더 사이즈 설정
-		collider->SetOffset(Vector2::Zero);
-
-		SetLayerType(ToEngineLayerType(ePacLayerType::Tile));
 	}
 
 	void Tile::Update()
@@ -56,4 +49,5 @@ namespace pac
 	{
 		GameObject::Render(hdc);
 	}
+
 }

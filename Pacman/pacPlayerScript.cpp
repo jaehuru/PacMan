@@ -11,7 +11,7 @@
 #include "Resource/huruResources.h"
 #include "Component/Collider/huruCollider.h"
 #include "Component/Rigidbody/huruRigidbody.h"
-#include "pacTileScript.h"
+#include "Collision/huruCollisionManager.h"
 
 
 
@@ -19,7 +19,12 @@ namespace pac
 {
 	PlayerScript::PlayerScript() :
 		mState(PlayerScript::eState::Alive),
-		mAnimator(nullptr)
+		mAnimator(nullptr),
+		mCurrentTile(Vector2::Zero),
+		mTargetTile(Vector2::Zero),
+		mCurrentDir(Vector2::Zero),
+		mNextDir(Vector2::Zero),
+		mSpeed(3.f)
 	{
 
 	}
@@ -39,12 +44,10 @@ namespace pac
 		if (mAnimator == nullptr)
 			mAnimator = GetOwner()->GetComponent<Animator>();
 
-		mPrevPosition = GetOwner()->GetComponent<Transform>()->GetPosition();
-
 		switch (mState)
 		{
 		case eState::Alive:
-			move();
+			HandleInput();
 			break;
 		case eState::Dead:
 			Dead();
@@ -66,21 +69,11 @@ namespace pac
 
 	void PlayerScript::OnCollisionEnter(Collider* other)
 	{
-		if (other->GetOwner()->GetLayerType() == ToEngineLayerType(ePacLayerType::Tile))
-		{
-			GetOwner()->GetComponent<Transform>()->SetPosition(mPrevPosition);
-		}
-
 		Script::OnCollisionEnter(other);
 	}
 
 	void PlayerScript::OnCollisionStay(Collider* other)
 	{
-		if (other->GetOwner()->GetLayerType() == ToEngineLayerType(ePacLayerType::Tile))
-		{
-			GetOwner()->GetComponent<Transform>()->SetPosition(mPrevPosition);
-		}
-
 		Script::OnCollisionStay(other);
 	}
 
@@ -89,33 +82,24 @@ namespace pac
 		Script::OnCollisionExit(other);
 	}
 
-	void PlayerScript::move()
+	void PlayerScript::HandleInput()
 	{
-		auto transform = GetOwner()->GetComponent<Transform>();
-		Vector2 direction = { 0.f, 0.f };
+		Transform* transform = GetOwner()->GetComponent<Transform>();
 
-		if (Input::GetKey(eKeyCode::Left))
-			direction.x -= 1.f;
-		if (Input::GetKey(eKeyCode::Right))
-			direction.x += 1.f;
-		if (Input::GetKey(eKeyCode::Up))
-			direction.y -= 1.f;
-		if (Input::GetKey(eKeyCode::Down))
-			direction.y += 1.f;
-
-		if (direction.x != 0.f || direction.y != 0.f)
-		{
-			// normalize direction
-			direction = direction.normalize();
-
-			float speed = 60.f; // 필요하면 멤버 변수로 분리
-			transform->SetPosition(transform->GetPosition() + direction * speed * Time::DeltaTime());
-		}
+		if (Input::GetKeyDown(eKeyCode::Up))    mNextDir = { 0, -1 };
+		if (Input::GetKeyDown(eKeyCode::Down))  mNextDir = { 0, 1 };
+		if (Input::GetKeyDown(eKeyCode::Left))  mNextDir = { -1, 0 };
+		if (Input::GetKeyDown(eKeyCode::Right)) mNextDir = { 1, 0 };
 	}
 
 	void PlayerScript::Dead()
 	{
 
+	}
+
+	bool PlayerScript::CanMove(Vector2 from, Vector2 dir)
+	{
+		return false;
 	}
 }
 

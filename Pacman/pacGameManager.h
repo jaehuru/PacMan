@@ -2,11 +2,14 @@
 
 #include "Common/CommonInclude.h"
 #include "pacEnum.h"
+#include "pacDefine.h"
 
 namespace huru::graphics { class Texture; }
 
 namespace pac
 {
+    class Tile;
+
     class GameManager
     {
     public:
@@ -38,5 +41,7 @@ namespace pac
     private:
         graphics::Texture* mSpriteTexture = nullptr;
         graphics::Texture* mPacmanTexture = nullptr;
+
+       vector<Tile*> mTileMap;
     };
 }

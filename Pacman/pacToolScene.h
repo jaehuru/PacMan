@@ -1,13 +1,12 @@
 #pragma once
 
 #include "Scene/huruScene.h"
+#include "pacTile.h"
 
 namespace huru::graphics { class Texture; }
 
 namespace pac
 {
-	class Tile;
-
 	class ToolScene : public Scene
 	{
 	public:
@@ -28,9 +27,11 @@ namespace pac
 	private:
 		void	HandleInput();
 		void	DrawTileGrid(HDC hdc);
+		void	TileTypeTextOut(HDC hdc);
 
 	private:
-		vector<Tile*> mTiles;
+		vector<Tile*> mTileMap;
+		Tile::eTileType mSelectedTileType;
 	};
 }
 
