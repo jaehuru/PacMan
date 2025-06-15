@@ -1,17 +1,16 @@
 //Pacman
 #include "pacPlayerScript.h"
 #include "pacGameManager.h"
+#include "pacTile.h"
 //Engine
 #include "Helpers/huruInput.h"
 #include "Component/Transform/huruTransform.h"
 #include "Helpers/huruTime.h"
-#include "GameObject/huruGameObject.h"
+#include "Component/Camera/huruCamera.h"
+#include "Renderer/huruRenderer.h"
+#include "Component/huruComponent.h"
 #include "Component/Animator/huruAnimator.h"
-#include "Object/huruObject.h"
 #include "Resource/huruResources.h"
-#include "Component/Collider/huruCollider.h"
-#include "Component/Rigidbody/huruRigidbody.h"
-#include "Collision/huruCollisionManager.h"
 
 
 
@@ -24,7 +23,8 @@ namespace pac
 		mTargetTile(Vector2::Zero),
 		mCurrentDir(Vector2::Zero),
 		mNextDir(Vector2::Zero),
-		mSpeed(3.f)
+		mSpeed(80.f),
+		mRotationAngle(0.f)
 	{
 
 	}
@@ -36,25 +36,82 @@ namespace pac
 
 	void PlayerScript::Initialize()
 	{
+		if (mAnimator == nullptr)
+		{
+			mAnimator = GetOwner()->GetComponent<Animator>();
+			if (mAnimator)
+			{
+				mAnimator->CreateAnimationByFolder(L"Move", L"../Resources/img/pacman", Vector2::Zero, 0.1f);
+				mAnimator->PlayAnimation(L"Move", true);
+			}
+		}
 
+		Script::Initialize();
 	}
 
 	void PlayerScript::Update()
 	{
-		if (mAnimator == nullptr)
-			mAnimator = GetOwner()->GetComponent<Animator>();
+		HandleInput();
 
-		switch (mState)
+		if (mState == eState::Dead)
 		{
-		case eState::Alive:
-			HandleInput();
-			break;
-		case eState::Dead:
 			Dead();
-			break;
-		default:
-			break;
+			return;
 		}
+
+		Transform* tf = GetOwner()->GetComponent<Transform>();
+		Vector2 pos = tf->GetPosition();
+
+		// 현재 위치의 타일 좌표 계산
+		int idxX = static_cast<int>(pos.x / Tile::Size.x);
+		int idxY = static_cast<int>(pos.y / Tile::Size.y);
+		mCurrentTile = Vector2((float)idxX, (float)idxY);
+
+		// 타일 중심과 거리 계산
+		Vector2 center = SnapToTileCenter(mCurrentTile);
+		Vector2 toCenter = center - pos;
+
+		if (toCenter.length() < 0.1f)
+		{
+			tf->SetPosition(center);
+
+			// 이동 가능하면 방향 전환
+			if (CanMove(mCurrentTile, mNextDir))
+			{
+				mCurrentDir = mNextDir;
+			}
+
+			// 현재 방향으로 이동 가능한 경우, 타겟 타일 갱신
+			if (CanMove(mCurrentTile, mCurrentDir))
+			{
+				mTargetTile = mCurrentTile + mCurrentDir;
+			}
+			else
+			{
+				mCurrentDir = Vector2::Zero;
+			}
+		}
+
+		// 방향에 따른 회전값 설정 (Transform에 세팅)
+		if (mCurrentDir == Vector2(1, 0))        // 오른쪽
+			mRotationAngle = 0.0f;
+		else if (mCurrentDir == Vector2(-1, 0))  // 왼쪽
+			mRotationAngle = 180.0f;
+		else if (mCurrentDir == Vector2(0, -1))  // 위쪽
+			mRotationAngle = -90.0f;
+		else if (mCurrentDir == Vector2(0, 1))   // 아래쪽
+			mRotationAngle = 90.0f;
+
+		tf->SetRotation(mRotationAngle);
+
+		// 실제 이동
+		if (mCurrentDir != Vector2::Zero)
+		{
+			Vector2 move = mCurrentDir * mSpeed * Time::DeltaTime();
+			tf->SetPosition(tf->GetPosition() + move);
+		}
+
+		Script::Update();
 	}
 
 	void PlayerScript::LateUpdate()
@@ -84,12 +141,14 @@ namespace pac
 
 	void PlayerScript::HandleInput()
 	{
-		Transform* transform = GetOwner()->GetComponent<Transform>();
-
-		if (Input::GetKeyDown(eKeyCode::Up))    mNextDir = { 0, -1 };
-		if (Input::GetKeyDown(eKeyCode::Down))  mNextDir = { 0, 1 };
-		if (Input::GetKeyDown(eKeyCode::Left))  mNextDir = { -1, 0 };
-		if (Input::GetKeyDown(eKeyCode::Right)) mNextDir = { 1, 0 };
+		if (Input::GetKey(eKeyCode::Up))
+			mNextDir = DIR_UP;
+		else if (Input::GetKey(eKeyCode::Down))
+			mNextDir = DIR_DOWN;
+		else if (Input::GetKey(eKeyCode::Left))
+			mNextDir = DIR_LEFT;
+		else if (Input::GetKey(eKeyCode::Right))
+			mNextDir = DIR_RIGHT;
 	}
 
 	void PlayerScript::Dead()
@@ -97,9 +156,36 @@ namespace pac
 
 	}
 
+	Vector2 PlayerScript::SnapToTileCenter(Vector2 tilePos)
+	{
+		{
+			return Vector2(
+				tilePos.x * Tile::Size.x + Tile::Size.x * 0.5f,
+				tilePos.y * Tile::Size.y + Tile::Size.y * 0.5f
+			);
+		}
+	}
+
 	bool PlayerScript::CanMove(Vector2 from, Vector2 dir)
 	{
-		return false;
+		Vector2 to = from + dir;
+
+		if (to.x < 0 || to.y < 0)
+			return false;
+
+		int idxX = static_cast<int>(to.x);
+		int idxY = static_cast<int>(to.y);
+		int index = define::GetLinearIndex(idxX, idxY);
+
+		auto& map = GameManager::GetInstance().GetTileMap();
+		if (index < 0 || index >= static_cast<int>(map.size()))
+			return false;
+
+		Tile* tile = map[index];
+		if (tile == nullptr)
+			return false;
+
+		return tile->GetTileType() == Tile::eTileType::Path;
 	}
 }
 

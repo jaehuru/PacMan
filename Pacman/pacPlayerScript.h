@@ -41,14 +41,21 @@ namespace pac
 		bool		CanMove(Vector2 from, Vector2 dir);
 		void		Dead();
 
+		Vector2		SnapToTileCenter(Vector2 tilePos);
 	private:
 		Animator*	mAnimator;
 		eState		mState;
 
-		Vector2		mCurrentTile;     // 현재 타일 좌표
-		Vector2		mTargetTile;      // 이동하려는 목표 타일
-		Vector2		mCurrentDir;      // 현재 이동 방향 
-		Vector2		mNextDir;         // 입력 받은 다음 방향
+		const		Vector2 DIR_UP = Vector2(0, -1);
+		const		Vector2 DIR_DOWN = Vector2(0, 1);
+		const		Vector2 DIR_LEFT = Vector2(-1, 0);
+		const		Vector2 DIR_RIGHT = Vector2(1, 0);
+
+		Vector2		mCurrentTile;    
+		Vector2		mTargetTile;     
+		Vector2		mCurrentDir;      
+		Vector2		mNextDir;        
 		float		mSpeed;
+		float		mRotationAngle;
 	};
 }

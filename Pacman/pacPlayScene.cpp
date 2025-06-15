@@ -31,15 +31,13 @@ namespace pac
 		GameManager::GetInstance().LoadMap();
 
 		// Player
-		GameObject* player = object::Instantiate<Player>(
-				ToEngineLayerType(ePacLayerType::Player),
-				Vector2(580.0f, 330.0f));
+		Vector2 startTilePos = Vector2(46, 21);
+		Vector2 startPos = Vector2(
+			startTilePos.x * Tile::Size.x + Tile::Size.x * 0.5f,
+			startTilePos.y * Tile::Size.y + Tile::Size.y * 0.5f);
 
-
-
-		// Sound
-		//AudioClip* ac = Resources::Load<AudioClip>(L"BGSound", L"..\\Resources\\Sound\\...");
-
+		GameObject* player = object::Instantiate<Player>(ToEngineLayerType(ePacLayerType::Player),
+															(Vector2(startPos.x, startPos.y)));
 
 		Scene::Initialize();
 	}

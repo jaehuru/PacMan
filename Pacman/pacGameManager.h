@@ -5,6 +5,7 @@
 #include "pacDefine.h"
 
 namespace huru::graphics { class Texture; }
+namespace huru { class Animator; }
 
 namespace pac
 {
@@ -29,7 +30,8 @@ namespace pac
         void        LoadMapFile(const wstring& filePath, graphics::Texture* texture);
 
         graphics::Texture* GetSpriteTexture() const { return mSpriteTexture; }
-        graphics::Texture* GetPacmanTexture() const { return mPacmanTexture; }
+
+        const vector<Tile*>& GetTileMap() const { return mTileMap; }
 
     private:
         GameManager() = default;
@@ -39,8 +41,9 @@ namespace pac
         GameManager& operator=(const GameManager&) = delete;
 
     private:
+        Animator* mAnimator;
+
         graphics::Texture* mSpriteTexture = nullptr;
-        graphics::Texture* mPacmanTexture = nullptr;
 
        vector<Tile*> mTileMap;
     };

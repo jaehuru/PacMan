@@ -10,6 +10,7 @@
 #include "Component/TileMapRenderer/huruTileMapRenderer.h"
 #include "Object/huruObject.h"
 #include "Collision/huruCollisionManager.h"
+#include "Component/Animator/huruAnimator.h"
 
 namespace pac
 {
@@ -28,8 +29,7 @@ namespace pac
 
 	void GameManager::LoadResources()
 	{
-		mSpriteTexture = Resources::Load<graphics::Texture>(L"Sprite", L"..\\Resources\\PacmanSprite.bmp");
-		mPacmanTexture = Resources::Load<graphics::Texture>(L"Pacman", L"..\\Resources\\img\\pacman\\1.png");
+		mSpriteTexture = Resources::Load<graphics::Texture>(L"Sprite", L"../Resources/PacmanSprite.bmp");
 	}
 
 	void GameManager::LoadScenes()
@@ -43,7 +43,7 @@ namespace pac
 
 	void GameManager::LoadMap()
 	{
-		LoadMapFile(L"..\\Resources\\PacmanMap.tile", mSpriteTexture);
+		LoadMapFile(L"../Resources/PacmanMap.tile", mSpriteTexture);
 	}
 
 	void GameManager::LoadMapFile(const wstring& filePath, graphics::Texture* texture)

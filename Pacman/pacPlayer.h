@@ -6,7 +6,7 @@
 namespace huru 
 { 
 	class Transform;
-	class SpriteRenderer;
+	class Animator;
 }
 
 namespace pac
@@ -22,14 +22,9 @@ namespace pac
 		void LateUpdate() override;
 		void Render(HDC hdc) override;
 
-		float GetSpeed() const { return mSpeed; }
-
 	private:
 		Transform* mTransform;
-		SpriteRenderer* mSpriteRenderer;
-
-		Vector2 mDirection;
-		float mSpeed;
+		Animator* mAnimator;
 	};
 }
 
