@@ -56,6 +56,7 @@ namespace pac
 		Vector2		mCurrentDir;      
 		Vector2		mNextDir;        
 		float		mSpeed;
-		float		mRotationAngle;
+
+		wstring		mCurrentAnimName;
 	};
 }

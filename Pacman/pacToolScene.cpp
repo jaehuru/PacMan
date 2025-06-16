@@ -12,7 +12,7 @@
 #include "Helpers/huruInput.h"
 #include "Component/Transform/huruTransform.h"
 
-extern huru::Application application;
+extern Application application;
 
 
 namespace pac

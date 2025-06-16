@@ -11,7 +11,7 @@
 #include "Scene/huruSceneManager.h"
 #include "Resource/huruTexture.h"
 
-huru::Application application;
+Application application;
 
 ULONG_PTR gpToken;
 Gdiplus::GdiplusStartupInput gpsi;
@@ -151,8 +151,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
     int a = 0;
     srand(unsigned int(&a));
 
-    huru::Scene* activeScene = huru::SceneManager::GetActiveScene();
-    std::wstring name = activeScene->GetName();
+    Scene* activeScene = SceneManager::GetActiveScene();
+    wstring name = activeScene->GetName();
     if (name == L"ToolScene")
     {
         HWND ToolhWnd = CreateWindowW(
@@ -165,7 +165,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
             hInstance,
             nullptr);
 
-        huru::graphics::Texture* texture = pac::GameManager::GetInstance().GetSpriteTexture();
+        graphics::Texture* texture = pac::GameManager::GetInstance().GetSpriteTexture();
   
         //Tile 윈도우 크기 조정 -- TOOL
         RECT rect =

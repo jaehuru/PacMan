@@ -38,8 +38,6 @@ namespace pac
 
 		GameObject* player = object::Instantiate<Player>(ToEngineLayerType(ePacLayerType::Player),
 															(Vector2(startPos.x, startPos.y)));
-
-		Scene::Initialize();
 	}
 
 	void PlayScene::Update()

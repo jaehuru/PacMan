@@ -24,7 +24,7 @@ namespace pac
 		mCurrentDir(Vector2::Zero),
 		mNextDir(Vector2::Zero),
 		mSpeed(80.f),
-		mRotationAngle(0.f)
+		mCurrentAnimName(L"")
 	{
 
 	}
@@ -41,12 +41,15 @@ namespace pac
 			mAnimator = GetOwner()->GetComponent<Animator>();
 			if (mAnimator)
 			{
-				mAnimator->CreateAnimationByFolder(L"Move", L"../Resources/img/pacman", Vector2::Zero, 0.1f);
-				mAnimator->PlayAnimation(L"Move", true);
+				mAnimator->CreateAnimationByFolder(L"Move_Left", L"../Resources/img/pacman/left", Vector2::Zero, 0.1f);
+				mAnimator->CreateAnimationByFolder(L"Move_Down", L"../Resources/img/pacman/down", Vector2::Zero, 0.1f);
+				mAnimator->CreateAnimationByFolder(L"Move_Right", L"../Resources/img/pacman/right", Vector2::Zero, 0.1f);
+				mAnimator->CreateAnimationByFolder(L"Move_Up", L"../Resources/img/pacman/up", Vector2::Zero, 0.1f);
+
+				mAnimator->PlayAnimation(L"Move_Left", true);
+				mCurrentAnimName = L"Move_Left";
 			}
 		}
-
-		Script::Initialize();
 	}
 
 	void PlayerScript::Update()
@@ -59,8 +62,8 @@ namespace pac
 			return;
 		}
 
-		Transform* tf = GetOwner()->GetComponent<Transform>();
-		Vector2 pos = tf->GetPosition();
+		Transform* tansform = GetOwner()->GetComponent<Transform>();
+		Vector2 pos = tansform->GetPosition();
 
 		// 현재 위치의 타일 좌표 계산
 		int idxX = static_cast<int>(pos.x / Tile::Size.x);
@@ -73,7 +76,7 @@ namespace pac
 
 		if (toCenter.length() < 0.1f)
 		{
-			tf->SetPosition(center);
+			tansform->SetPosition(center);
 
 			// 이동 가능하면 방향 전환
 			if (CanMove(mCurrentTile, mNextDir))
@@ -92,26 +95,29 @@ namespace pac
 			}
 		}
 
-		// 방향에 따른 회전값 설정 (Transform에 세팅)
-		if (mCurrentDir == Vector2(1, 0))        // 오른쪽
-			mRotationAngle = 0.0f;
-		else if (mCurrentDir == Vector2(-1, 0))  // 왼쪽
-			mRotationAngle = 180.0f;
-		else if (mCurrentDir == Vector2(0, -1))  // 위쪽
-			mRotationAngle = -90.0f;
-		else if (mCurrentDir == Vector2(0, 1))   // 아래쪽
-			mRotationAngle = 90.0f;
+		// 이동 방향에 따라 애니메이션 전환
+		wstring newAnim;
+		if (mCurrentDir == DIR_RIGHT)		
+			newAnim = L"Move_Right";
+		else if (mCurrentDir == DIR_LEFT)	
+			newAnim = L"Move_Left";
+		else if (mCurrentDir == DIR_UP)		
+			newAnim = L"Move_Up";
+		else if (mCurrentDir == DIR_DOWN)	
+			newAnim = L"Move_Down";
 
-		tf->SetRotation(mRotationAngle);
+		if (!newAnim.empty() && newAnim != mCurrentAnimName && mAnimator)
+		{
+			mAnimator->PlayAnimation(newAnim, true);
+			mCurrentAnimName = newAnim;
+		}
 
 		// 실제 이동
 		if (mCurrentDir != Vector2::Zero)
 		{
 			Vector2 move = mCurrentDir * mSpeed * Time::DeltaTime();
-			tf->SetPosition(tf->GetPosition() + move);
+			tansform->SetPosition(tansform->GetPosition() + move);
 		}
-
-		Script::Update();
 	}
 
 	void PlayerScript::LateUpdate()
@@ -182,7 +188,7 @@ namespace pac
 			return false;
 
 		Tile* tile = map[index];
-		if (tile == nullptr)
+		if (!tile)
 			return false;
 
 		return tile->GetTileType() == Tile::eTileType::Path;
