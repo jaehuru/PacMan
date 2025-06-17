@@ -53,6 +53,7 @@ namespace pac
 			object::Destroy(tile);
 		mTileMap.clear();
 		mTileMap.resize(define::MaxMapWidth * define::MaxMapHeight, nullptr);
+		mPortalTiles.clear();
 
 		FILE* pFile = nullptr;
 		_wfopen_s(&pFile, filePath.c_str(), L"rb");
@@ -94,6 +95,11 @@ namespace pac
 			if (linearIndex >= 0 && linearIndex < static_cast<int>(mTileMap.size()))
 			{
 				mTileMap[linearIndex] = tile;
+			}
+
+			if (tile->GetTileType() == Tile::eTileType::Portal)
+			{
+				mPortalTiles.push_back(tile);
 			}
 		}
 

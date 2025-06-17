@@ -12,7 +12,7 @@ namespace pac
 			Path,
 			Wall,
 			Jail,
-			Potal
+			Portal
 		};
 
 		Tile();

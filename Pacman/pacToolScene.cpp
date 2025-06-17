@@ -35,6 +35,8 @@ namespace pac
 		renderer::mainCamera = cameraComp;
 		camera->AddComponent<CameraScript>();
 
+		mTileMap.resize(define::MaxMapWidth * define::MaxMapHeight, nullptr);
+
 		Scene::Initialize();
 	}
 
@@ -200,7 +202,6 @@ namespace pac
 		{
 			Vector2 pos = Input::GetMousePosition();
 			pos = renderer::mainCamera->CalcuateTilePosition(pos);
-			mTileMap.resize(define::MaxMapWidth * define::MaxMapHeight, nullptr);
 
 			if (pos.x >= 0.0f && pos.y >= 0.0f)
 			{
@@ -267,7 +268,7 @@ namespace pac
 		else if (Input::GetKeyDown(eKeyCode::E))
 			mSelectedTileType = Tile::eTileType::Jail;
 		else if (Input::GetKeyDown(eKeyCode::R))
-			mSelectedTileType = Tile::eTileType::Potal;
+			mSelectedTileType = Tile::eTileType::Portal;
 	}
 
 	void ToolScene::DrawTileGrid(HDC hdc)
@@ -312,7 +313,7 @@ namespace pac
 		case Tile::eTileType::Wall:  typeStr = L"Selected: Wall"; break;
 		case Tile::eTileType::Path:  typeStr = L"Selected: Path"; break;
 		case Tile::eTileType::Jail:  typeStr = L"Selected: Jail"; break;
-		case Tile::eTileType::Potal: typeStr = L"Selected: Potal"; break;
+		case Tile::eTileType::Portal: typeStr = L"Selected: Potal"; break;
 		}
 
 		TextOut(hdc, 10, 10, typeStr.c_str(), (int)typeStr.length());

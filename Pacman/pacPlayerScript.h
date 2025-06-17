@@ -7,10 +7,12 @@ namespace huru
 {
 	class Collider;
 	class Animator;
+	class Transform;
 }
 
 namespace pac
 {
+	class Tile;
 
 	class PlayerScript : public Script
 	{
@@ -41,22 +43,30 @@ namespace pac
 		bool		CanMove(Vector2 from, Vector2 dir);
 		void		Dead();
 
+		void		ProcessTileNavigation();
 		Vector2		SnapToTileCenter(Vector2 tilePos);
+
+		bool		IsOnPortalTile();
+		void		TeleportToOtherPortal();
+
 	private:
-		Animator*	mAnimator;
-		eState		mState;
+		Animator*		mAnimator;
+		eState			mState;
+		Transform*		mTransform;
 
-		const		Vector2 DIR_UP = Vector2(0, -1);
-		const		Vector2 DIR_DOWN = Vector2(0, 1);
-		const		Vector2 DIR_LEFT = Vector2(-1, 0);
-		const		Vector2 DIR_RIGHT = Vector2(1, 0);
+		const			Vector2 DIR_UP = Vector2(0, -1);
+		const			Vector2 DIR_DOWN = Vector2(0, 1);
+		const			Vector2 DIR_LEFT = Vector2(-1, 0);
+		const			Vector2 DIR_RIGHT = Vector2(1, 0);
 
-		Vector2		mCurrentTile;    
-		Vector2		mTargetTile;     
-		Vector2		mCurrentDir;      
-		Vector2		mNextDir;        
-		float		mSpeed;
+		Vector2			mCurrentTile;    
+		Vector2			mTargetTile;     
+		Vector2			mCurrentDir;      
+		Vector2			mNextDir;        
+		float			mSpeed;
 
-		wstring		mCurrentAnimName;
+		wstring			mCurrentAnimName;
+		float			mPortalCoolTime;
+		vector<Tile*>	mPortals;
 	};
 }

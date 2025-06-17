@@ -22,16 +22,14 @@ namespace pac
 
         void        Initialize(); // 리소스 로딩
   
-
         void        LoadResources();
         void        LoadScenes();
         void        LoadMap();
-
         void        LoadMapFile(const wstring& filePath, graphics::Texture* texture);
 
-        graphics::Texture* GetSpriteTexture() const { return mSpriteTexture; }
-
-        const vector<Tile*>& GetTileMap() const { return mTileMap; }
+        graphics::Texture*      GetSpriteTexture()  const { return mSpriteTexture; }
+        const vector<Tile*>&    GetTileMap()        const { return mTileMap; }
+        const vector<Tile*>&    GetPortalTiles()    const { return mPortalTiles; }
 
     private:
         GameManager() = default;
@@ -46,5 +44,6 @@ namespace pac
         graphics::Texture* mSpriteTexture = nullptr;
 
        vector<Tile*> mTileMap;
+       vector<Tile*> mPortalTiles;
     };
 }

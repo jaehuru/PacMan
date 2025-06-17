@@ -19,12 +19,15 @@ namespace pac
 	PlayerScript::PlayerScript() :
 		mState(PlayerScript::eState::Alive),
 		mAnimator(nullptr),
+		mTransform(nullptr),
 		mCurrentTile(Vector2::Zero),
 		mTargetTile(Vector2::Zero),
 		mCurrentDir(Vector2::Zero),
 		mNextDir(Vector2::Zero),
 		mSpeed(80.f),
-		mCurrentAnimName(L"")
+		mCurrentAnimName(L""),
+		mPortalCoolTime(0.0f),
+		mPortals{ }
 	{
 
 	}
@@ -36,6 +39,8 @@ namespace pac
 
 	void PlayerScript::Initialize()
 	{
+		mTransform = GetOwner()->GetComponent<Transform>();
+
 		if (mAnimator == nullptr)
 		{
 			mAnimator = GetOwner()->GetComponent<Animator>();
@@ -50,74 +55,20 @@ namespace pac
 				mCurrentAnimName = L"Move_Left";
 			}
 		}
+
+		mPortals = GameManager::GetInstance().GetPortalTiles();
 	}
 
 	void PlayerScript::Update()
 	{
-		HandleInput();
-
 		if (mState == eState::Dead)
 		{
 			Dead();
 			return;
 		}
 
-		Transform* tansform = GetOwner()->GetComponent<Transform>();
-		Vector2 pos = tansform->GetPosition();
-
-		// 현재 위치의 타일 좌표 계산
-		int idxX = static_cast<int>(pos.x / Tile::Size.x);
-		int idxY = static_cast<int>(pos.y / Tile::Size.y);
-		mCurrentTile = Vector2((float)idxX, (float)idxY);
-
-		// 타일 중심과 거리 계산
-		Vector2 center = SnapToTileCenter(mCurrentTile);
-		Vector2 toCenter = center - pos;
-
-		if (toCenter.length() < 0.1f)
-		{
-			tansform->SetPosition(center);
-
-			// 이동 가능하면 방향 전환
-			if (CanMove(mCurrentTile, mNextDir))
-			{
-				mCurrentDir = mNextDir;
-			}
-
-			// 현재 방향으로 이동 가능한 경우, 타겟 타일 갱신
-			if (CanMove(mCurrentTile, mCurrentDir))
-			{
-				mTargetTile = mCurrentTile + mCurrentDir;
-			}
-			else
-			{
-				mCurrentDir = Vector2::Zero;
-			}
-		}
-
-		// 이동 방향에 따라 애니메이션 전환
-		wstring newAnim;
-		if (mCurrentDir == DIR_RIGHT)		
-			newAnim = L"Move_Right";
-		else if (mCurrentDir == DIR_LEFT)	
-			newAnim = L"Move_Left";
-		else if (mCurrentDir == DIR_UP)		
-			newAnim = L"Move_Up";
-		else if (mCurrentDir == DIR_DOWN)	
-			newAnim = L"Move_Down";
-
-		if (!newAnim.empty() && newAnim != mCurrentAnimName && mAnimator)
-		{
-			mAnimator->PlayAnimation(newAnim, true);
-			mCurrentAnimName = newAnim;
-		}
-
-		// 실제 이동
-		if (mCurrentDir != Vector2::Zero)
-		{
-			Vector2 move = mCurrentDir * mSpeed * Time::DeltaTime();
-			tansform->SetPosition(tansform->GetPosition() + move);
-		}
+		HandleInput();
+		ProcessTileNavigation();
 	}
 
 	void PlayerScript::LateUpdate()
@@ -147,37 +98,17 @@ namespace pac
 
 	void PlayerScript::HandleInput()
 	{
-		if (Input::GetKey(eKeyCode::Up))
-			mNextDir = DIR_UP;
-		else if (Input::GetKey(eKeyCode::Down))
-			mNextDir = DIR_DOWN;
-		else if (Input::GetKey(eKeyCode::Left))
-			mNextDir = DIR_LEFT;
-		else if (Input::GetKey(eKeyCode::Right))
-			mNextDir = DIR_RIGHT;
-	}
-
-	void PlayerScript::Dead()
-	{
-
-	}
-
-	Vector2 PlayerScript::SnapToTileCenter(Vector2 tilePos)
-	{
-		{
-			return Vector2(
-				tilePos.x * Tile::Size.x + Tile::Size.x * 0.5f,
-				tilePos.y * Tile::Size.y + Tile::Size.y * 0.5f
-			);
-		}
+		if (Input::GetKey(eKeyCode::Up))			mNextDir = DIR_UP;
+		else if (Input::GetKey(eKeyCode::Down))		mNextDir = DIR_DOWN;
+		else if (Input::GetKey(eKeyCode::Left))		mNextDir = DIR_LEFT;
+		else if (Input::GetKey(eKeyCode::Right))	mNextDir = DIR_RIGHT;
 	}
 
 	bool PlayerScript::CanMove(Vector2 from, Vector2 dir)
 	{
 		Vector2 to = from + dir;
 
-		if (to.x < 0 || to.y < 0)
-			return false;
+		if (to.x < 0 || to.y < 0)	return false;
 
 		int idxX = static_cast<int>(to.x);
 		int idxY = static_cast<int>(to.y);
@@ -188,10 +119,98 @@ namespace pac
 			return false;
 
 		Tile* tile = map[index];
-		if (!tile)
-			return false;
+		if (!tile)	return false;
 
-		return tile->GetTileType() == Tile::eTileType::Path;
+		return tile->GetTileType() == Tile::eTileType::Path || tile->GetTileType() == Tile::eTileType::Portal;
+	}
+
+	void PlayerScript::Dead()
+	{
+
+	}
+
+	void PlayerScript::ProcessTileNavigation()
+	{
+		Vector2 pos = mTransform->GetPosition();
+		int idxX = static_cast<int>(pos.x / Tile::Size.x);
+		int idxY = static_cast<int>(pos.y / Tile::Size.y);
+		mCurrentTile = Vector2((float)idxX, (float)idxY);
+
+		Vector2 center = SnapToTileCenter(mCurrentTile);
+		if ((center - pos).length() < 0.1f)
+		{
+			mTransform->SetPosition(center);
+
+			if (mPortalCoolTime <= 0.0f)
+			{
+				if (IsOnPortalTile())
+				{
+					TeleportToOtherPortal();
+					mPortalCoolTime = 0.08f;
+					return;
+				}
+			}
+			else
+				mPortalCoolTime -= Time::DeltaTime();
+
+
+			if (CanMove(mCurrentTile, mNextDir))
+				mCurrentDir = mNextDir;
+
+			if (CanMove(mCurrentTile, mCurrentDir))
+				mTargetTile = mCurrentTile + mCurrentDir;
+			else
+				mCurrentDir = Vector2::Zero;
+		}
+
+		wstring newAnim;
+		if (mCurrentDir == DIR_RIGHT)      newAnim = L"Move_Right";
+		else if (mCurrentDir == DIR_LEFT) newAnim = L"Move_Left";
+		else if (mCurrentDir == DIR_UP)   newAnim = L"Move_Up";
+		else if (mCurrentDir == DIR_DOWN) newAnim = L"Move_Down";
+
+		if (!newAnim.empty() && newAnim != mCurrentAnimName && mAnimator)
+		{
+			mAnimator->PlayAnimation(newAnim, true);
+			mCurrentAnimName = newAnim;
+		}
+
+		if (mCurrentDir == Vector2::Zero)
+			return;
+
+		Vector2 move = mCurrentDir * mSpeed * Time::DeltaTime();
+		mTransform->SetPosition(mTransform->GetPosition() + move);
+	}
+
+	Vector2 PlayerScript::SnapToTileCenter(Vector2 tilePos)
+	{
+		return Vector2
+		(
+			tilePos.x * Tile::Size.x + Tile::Size.x * 0.5f,
+			tilePos.y * Tile::Size.y + Tile::Size.y * 0.5f
+		);
+	}
+
+	bool PlayerScript::IsOnPortalTile()
+	{
+		for (Tile* portal : mPortals)
+			if (portal->GetIndexPosition() == mCurrentTile)
+				return true;
+		return false;
+	}
+
+	void PlayerScript::TeleportToOtherPortal()
+	{
+		if (mPortals.size() != 2) return;
+
+		// 현재 포탈 인덱스 찾기
+		int current = (mPortals[0]->GetIndexPosition() == mCurrentTile) ? 0 : 1;
+		int other = 1 - current;
+
+		// 반대 포탈 타일의 중앙 위치로 순간이동
+		Vector2 targetTile = mPortals[other]->GetIndexPosition();
+		Vector2 targetCenter = SnapToTileCenter(targetTile);
+		mTransform->SetPosition(targetCenter);
 	}
 }
 
