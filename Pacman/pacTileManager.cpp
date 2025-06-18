@@ -1,8 +1,6 @@
 //Pacman
 #include "pacTileManager.h"
 #include "pacTile.h"
-#include "pacDot.h"
-#include "pacPellet.h"
 #include "pacDefine.h"
 #include "pacEnum.h"
 //Engine
@@ -65,34 +63,7 @@ namespace pac
 				mPortalTiles.push_back(tile);
 			}
 		}
-
 		fclose(pFile);
-
-		// Dot°ú Pellet »ý¼º
-		/*for (Tile* tile : mTileMap)
-		{
-			if (!tile) continue;
-
-			if (tile->GetTileType() == Tile::eTileType::Path)
-			{
-				Dot* dot = object::Instantiate<Dot>(ToEngineLayerType(ePacLayerType::Dot), tile->GetPosition());
-				mDots.push_back(dot);
-			}
-			else if (tile->GetTileType() == Tile::eTileType::Pellet)
-			{
-				Pellet* pellet = object::Instantiate<Pellet>(ToEngineLayerType(ePacLayerType::Dot), tile->GetPosition());
-				mPellets.push_back(pellet);
-			}
-		}*/
-	}
-
-	Tile* TileManager::GetTile(int x, int y)
-	{
-		if (x < 0 || y < 0 || x >= define::MaxMapWidth || y >= define::MaxMapHeight)
-			return nullptr;
-
-		int index = define::GetLinearIndex(x, y);
-		return mTileMap[index];
 	}
 
 	void TileManager::Clear()
@@ -101,13 +72,5 @@ namespace pac
 			object::Destroy(tile);
 		mTileMap.clear();
 		mPortalTiles.clear();
-
-		for (Dot* dot : mDots)
-			object::Destroy(dot);
-		mDots.clear();
-
-		for (Pellet* pellet : mPellets)
-			object::Destroy(pellet);
-		mPellets.clear();
 	}
 }

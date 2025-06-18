@@ -9,7 +9,7 @@ namespace pac
         None = (int)::huru::enums::eLayerType::None,
         Background,
         Tile,
-        Dot,
+        Item,
         Enemy,
         Player,
         Particle,

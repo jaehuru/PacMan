@@ -2,6 +2,11 @@
 
 #include "GameObject/huruGameObject.h"
 
+namespace huru
+{
+	class SpriteRenderer;
+}
+
 namespace pac
 {
 	class Tile : public GameObject
@@ -14,6 +19,16 @@ namespace pac
 			Jail,
 			Portal,
 			Pellet
+		};
+
+		struct DotData
+		{
+			bool isCollected = false;
+		};
+
+		struct PelletData
+		{
+			bool isCollected = false;
 		};
 
 		Tile();
@@ -35,13 +50,13 @@ namespace pac
 		eTileType	GetTileType()				const { return mTileType; }
 
 	public:
-		static Vector2 Size;
-		static Vector2 Scale;
+		static Vector2	Size;
+		static Vector2	Scale;
 
 	private:
-		int mIndexX;
-		int mIndexY;
+		int				mIndexX;
+		int				mIndexY;
 
-		eTileType mTileType;
+		eTileType		mTileType;
 	};
 }

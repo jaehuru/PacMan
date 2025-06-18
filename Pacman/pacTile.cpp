@@ -1,10 +1,12 @@
 // Pacman
 #include "pacTile.h"
 #include "pacEnum.h"
+#include "pacGameManager.h"
 // Engine
 #include "Component/Transform/huruTransform.h"
 #include "Component/TileMapRenderer/huruTileMapRenderer.h"
-#include "Component/Collider/huruBoxCollider2D.h"
+#include "Component/SpriteRenderer/huruSpriteRenderer.h"
+#include "Resource/huruResources.h"
 
 namespace pac
 {
@@ -16,6 +18,7 @@ namespace pac
 		mIndexY(-1),
 		mTileType(eTileType::Path)
 	{
+
 	}
 
 	Tile::~Tile()
@@ -25,14 +28,14 @@ namespace pac
 
 	void Tile::Initialize()
 	{
-		GameObject::Initialize();
-
 		TileMapRenderer* tileMapRenderer = this->GetComponent<TileMapRenderer>();
 		if (tileMapRenderer)
 		{
 			tileMapRenderer->SetSize(Size);  // 외부에서 받아온 타일 크기 할당
 			tileMapRenderer->SetScale(Scale);
 		}
+
+		GameObject::Initialize();
 	}
 
 	void Tile::Update()
@@ -49,5 +52,4 @@ namespace pac
 	{
 		GameObject::Render(hdc);
 	}
-
 }

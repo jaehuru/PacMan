@@ -119,13 +119,19 @@ namespace pac
 
 		auto& map = mTileManager->GetTileMap();
 
+		wchar_t buf[128];
+		swprintf(buf, 128,
+			L"CanMove: from(%.0f,%.0f)->to(%.0f,%.0f) idx(%d,%d) tileIndex=%d\n",
+			from.x, from.y, to.x, to.y, idxX, idxY, index);
+		OutputDebugString(buf);
+
 		if (index < 0 || index >= static_cast<int>(map.size()))
 			return false;
 
 		Tile* tile = map[index];
 		if (!tile)	return false;
-
-		return tile->GetTileType() != Tile::eTileType::Wall && tile->GetTileType() != Tile::eTileType::Jail;
+		
+		return tile->GetTileType() == Tile::eTileType::Path || tile->GetTileType() == Tile::eTileType::Portal;
 	}
 
 	void PlayerScript::Dead()
@@ -184,6 +190,20 @@ namespace pac
 
 		Vector2 move = mCurrentDir * mSpeed * Time::DeltaTime();
 		mTransform->SetPosition(mTransform->GetPosition() + move);
+
+		/*Vector2 move = mCurrentDir * mSpeed * Time::DeltaTime();
+		Vector2 nextPos = mTransform->GetPosition() + move;
+
+		Vector2 toCenter = center - nextPos;
+		if ((mCurrentDir.x != 0 && fabs(toCenter.x) < fabs(move.x)) ||
+			(mCurrentDir.y != 0 && fabs(toCenter.y) < fabs(move.y)))
+		{
+			mTransform->SetPosition(center);
+		}
+		else
+		{
+			mTransform->SetPosition(nextPos);
+		}*/
 	}
 
 	Vector2 PlayerScript::SnapToTileCenter(Vector2 tilePos)

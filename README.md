@@ -1,18 +1,19 @@
 # PacMan Clone – 2D Game Project
 
-### 프로젝트 개요
+## Project Description
 
 [자체 제작한 Win32 기반 2D 게임 엔진](https://github.com/jaehuru/JaehuruEngine)을 활용하여 클래식 게임 **팩맨(Pac-Man)** 을 구현합니다.  
 게임 구조 설계, AI 상태머신 구현, 타일 기반 맵 로직, 간단한 UI 시스템을 통합하는 것을 목표로 합니다.
 
 ---
-## 개발 환경
+
+## Development Environment
 - 'Window OS'
 - 'Visual Studio 2022'
 
-## 기획
+---
 
-## 핵심 시스템 구성
+## 기획
 
 ### 타일맵 시스템
 - 고정된 타일 기반 맵 사용 (벽, 길, 점, 출구 구분)
@@ -41,7 +42,9 @@
 - Dot을 모두 먹으면 클리어
 - 유령에게 잡히면 사망 → 게임 오버
 
-## 구현
+---
+
+## Implementation Overview
 
 ### 싱글톤 패턴
 
@@ -66,3 +69,12 @@
 - 타일맵의 정보와 충돌 검사를 통해 유효한 이동만 허용
 - **방향에 따라 실시간으로 애니메이션 전환** 구현 (Animator 연동)
 - 포탈 이동 시스템 구현 (포탈 타일 도달 시 다른 포탈로 순간이동)
+
+---
+
+## Bugs
+
+### 터널링
+(Tunnelling) 현상이란 충돌 처리가 필요한 ***게임*** 오브젝트가 다른 충돌체를 뚫고 지나가는 현상
+
+- 단순한 게임임에도 Dot과 Pellet을 OOP적으로 개별 객체로 관리하면서 GDI+ 렌더링 한계로 프레임 처리 속도가 저하되었고 deltaTime이 커졌다. 이로 인해 SnapToTileCenter 기반 이동 로직에서 한 프레임 이동 거리가 커져 벽을 통과하는 터널링 현상이 발생하였다.

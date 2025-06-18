@@ -27,7 +27,6 @@ namespace pac
 
 	void PlayScene::Initialize()
 	{
-		GameManager::GetInstance().LoadResources();
 		GameManager::GetInstance().LoadMap();
 
 		// Player

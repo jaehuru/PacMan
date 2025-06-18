@@ -29,6 +29,8 @@ namespace pac
 
         graphics::Texture*      GetSpriteTexture()  const { return mSpriteTexture; }
         TileManager*            GetTileManager()    { return mTileManager; }
+        graphics::Texture* GetDotTexture() { return mDotTexture; }
+        graphics::Texture* GetPelletTexture() { return mPelletTexture; }
 
     private:
         GameManager() = default;
@@ -40,5 +42,7 @@ namespace pac
     private:
         graphics::Texture* mSpriteTexture = nullptr;
         TileManager* mTileManager = nullptr;
+        graphics::Texture* mDotTexture = nullptr;
+        graphics::Texture* mPelletTexture = nullptr;
     };
 }
