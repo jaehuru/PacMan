@@ -13,11 +13,11 @@ namespace huru
 namespace pac
 {
 	class Tile;
+	class TileManager;
 
 	class PlayerScript : public Script
 	{
 	public:
-
 		enum class eState
 		{
 			Alive,
@@ -53,6 +53,7 @@ namespace pac
 		Animator*		mAnimator;
 		eState			mState;
 		Transform*		mTransform;
+		TileManager*	mTileManager;
 
 		const			Vector2 DIR_UP = Vector2(0, -1);
 		const			Vector2 DIR_DOWN = Vector2(0, 1);

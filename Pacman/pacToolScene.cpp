@@ -185,7 +185,7 @@ namespace pac
 			tmr->SetScale(Tile::Scale);
 			tmr->SetIndex(Vector2(tool_idxX, tool_idxY));
 
-			tile->SetIndexPosition(tile_idxX, tile_idxY);
+			tile->SetPosition(tile_idxX, tile_idxY);
 
 			int linearIndex = define::GetLinearIndex(tile_idxX, tile_idxY);
 			if (linearIndex >= 0 && linearIndex < (int)mTileMap.size())
@@ -215,7 +215,7 @@ namespace pac
 					object::Destroy(mTileMap[linearIndex]);
 
 				Tile* tile = object::Instantiate<Tile>(ToEngineLayerType(ePacLayerType::Tile));
-				tile->SetIndexPosition(idxX, idxY);
+				tile->SetPosition(idxX, idxY);
 
 				Transform* tr = tile->GetComponent<Transform>();
 				tr->SetPosition(
@@ -269,6 +269,8 @@ namespace pac
 			mSelectedTileType = Tile::eTileType::Jail;
 		else if (Input::GetKeyDown(eKeyCode::R))
 			mSelectedTileType = Tile::eTileType::Portal;
+		else if (Input::GetKeyDown(eKeyCode::T))
+			mSelectedTileType = Tile::eTileType::Pellet;
 	}
 
 	void ToolScene::DrawTileGrid(HDC hdc)
@@ -314,6 +316,7 @@ namespace pac
 		case Tile::eTileType::Path:  typeStr = L"Selected: Path"; break;
 		case Tile::eTileType::Jail:  typeStr = L"Selected: Jail"; break;
 		case Tile::eTileType::Portal: typeStr = L"Selected: Potal"; break;
+		case Tile::eTileType::Pellet: typeStr = L"Selected: Pellet"; break;
 		}
 
 		TextOut(hdc, 10, 10, typeStr.c_str(), (int)typeStr.length());

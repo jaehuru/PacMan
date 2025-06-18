@@ -12,28 +12,27 @@ namespace pac
 			Path,
 			Wall,
 			Jail,
-			Portal
+			Portal,
+			Pellet
 		};
 
 		Tile();
 		~Tile();
 
-		void Initialize() override;
-		void Update() override;
-		void LateUpdate() override;
-		void Render(HDC hdc) override;
+		void		Initialize()	override;
+		void		Update()		override;
+		void		LateUpdate()	override;
+		void		Render(HDC hdc) override;
 
-		void SetIndexPosition(int x, int y)
+		void		SetPosition(int x, int y)
 		{
 			mIndexX = x;
 			mIndexY = y;
 		}
-		Vector2 GetIndexPosition() const { return Vector2 (mIndexX, mIndexY); }
-		int GetIndexX() const { return mIndexX; }
-		int GetIndexY() const { return mIndexY; }
+		Vector2		GetPosition()				const { return Vector2 (mIndexX, mIndexY); }
 
-		void SetTileType(eTileType type) { mTileType = type; }
-		eTileType GetTileType() const { return mTileType; }
+		void		SetTileType(eTileType type)	{ mTileType = type; }
+		eTileType	GetTileType()				const { return mTileType; }
 
 	public:
 		static Vector2 Size;

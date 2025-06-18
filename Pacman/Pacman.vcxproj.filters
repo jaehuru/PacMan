@@ -28,14 +28,14 @@
     <Filter Include="public\Scripts">
       <UniqueIdentifier>{d08584dd-c461-4570-b702-731276298675}</UniqueIdentifier>
     </Filter>
-    <Filter Include="public\GameManager">
-      <UniqueIdentifier>{85e1f298-f520-40b4-b392-e57cfcfe1e8f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="private\GameManager">
-      <UniqueIdentifier>{fa57ffb4-002c-4bbc-96c1-8f770655c08a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="public\Common">
       <UniqueIdentifier>{a7522250-97a8-47c5-b849-f257025ae7c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="public\Manager">
+      <UniqueIdentifier>{85e1f298-f520-40b4-b392-e57cfcfe1e8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="private\Manager">
+      <UniqueIdentifier>{fa57ffb4-002c-4bbc-96c1-8f770655c08a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -64,7 +64,7 @@
       <Filter>public\Contents</Filter>
     </ClInclude>
     <ClInclude Include="pacGameManager.h">
-      <Filter>public\GameManager</Filter>
+      <Filter>public\Manager</Filter>
     </ClInclude>
     <ClInclude Include="pacPlayer.h">
       <Filter>public\Contents</Filter>
@@ -77,6 +77,15 @@
     </ClInclude>
     <ClInclude Include="pacDefine.h">
       <Filter>public\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="pacTileManager.h">
+      <Filter>public\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="pacPellet.h">
+      <Filter>public\Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="pacDot.h">
+      <Filter>public\Contents</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -94,13 +103,22 @@
       <Filter>private\Contents</Filter>
     </ClCompile>
     <ClCompile Include="pacGameManager.cpp">
-      <Filter>private\GameManager</Filter>
+      <Filter>private\Manager</Filter>
     </ClCompile>
     <ClCompile Include="pacPlayer.cpp">
       <Filter>private\Contents</Filter>
     </ClCompile>
     <ClCompile Include="pacPlayerScript.cpp">
       <Filter>private\Scripts</Filter>
+    </ClCompile>
+    <ClCompile Include="pacTileManager.cpp">
+      <Filter>private\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="pacDot.cpp">
+      <Filter>private\Contents</Filter>
+    </ClCompile>
+    <ClCompile Include="pacPellet.cpp">
+      <Filter>private\Contents</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

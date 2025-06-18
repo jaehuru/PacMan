@@ -2,6 +2,7 @@
 #include "pacPlayerScript.h"
 #include "pacGameManager.h"
 #include "pacTile.h"
+#include "pacTileManager.h"
 //Engine
 #include "Helpers/huruInput.h"
 #include "Component/Transform/huruTransform.h"
@@ -20,6 +21,7 @@ namespace pac
 		mState(PlayerScript::eState::Alive),
 		mAnimator(nullptr),
 		mTransform(nullptr),
+		mTileManager(nullptr),
 		mCurrentTile(Vector2::Zero),
 		mTargetTile(Vector2::Zero),
 		mCurrentDir(Vector2::Zero),
@@ -56,7 +58,8 @@ namespace pac
 			}
 		}
 
-		mPortals = GameManager::GetInstance().GetPortalTiles();
+		mTileManager = GameManager::GetInstance().GetTileManager();
+		mPortals = mTileManager->GetPortalTiles();
 	}
 
 	void PlayerScript::Update()
@@ -114,14 +117,15 @@ namespace pac
 		int idxY = static_cast<int>(to.y);
 		int index = define::GetLinearIndex(idxX, idxY);
 
-		auto& map = GameManager::GetInstance().GetTileMap();
+		auto& map = mTileManager->GetTileMap();
+
 		if (index < 0 || index >= static_cast<int>(map.size()))
 			return false;
 
 		Tile* tile = map[index];
 		if (!tile)	return false;
 
-		return tile->GetTileType() == Tile::eTileType::Path || tile->GetTileType() == Tile::eTileType::Portal;
+		return tile->GetTileType() != Tile::eTileType::Wall && tile->GetTileType() != Tile::eTileType::Jail;
 	}
 
 	void PlayerScript::Dead()
@@ -194,7 +198,7 @@ namespace pac
 	bool PlayerScript::IsOnPortalTile()
 	{
 		for (Tile* portal : mPortals)
-			if (portal->GetIndexPosition() == mCurrentTile)
+			if (portal->GetPosition() == mCurrentTile)
 				return true;
 		return false;
 	}
@@ -204,11 +208,11 @@ namespace pac
 		if (mPortals.size() != 2) return;
 
 		// 현재 포탈 인덱스 찾기
-		int current = (mPortals[0]->GetIndexPosition() == mCurrentTile) ? 0 : 1;
+		int current = (mPortals[0]->GetPosition() == mCurrentTile) ? 0 : 1;
 		int other = 1 - current;
 
 		// 반대 포탈 타일의 중앙 위치로 순간이동
-		Vector2 targetTile = mPortals[other]->GetIndexPosition();
+		Vector2 targetTile = mPortals[other]->GetPosition();
 		Vector2 targetCenter = SnapToTileCenter(targetTile);
 		mTransform->SetPosition(targetCenter);
 	}

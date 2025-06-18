@@ -5,12 +5,12 @@
 #include "pacPlayer.h"
 #include "pacPlayerScript.h"
 // Engine 
-#include "../JaehuruEngine/Engine/public/Component/Camera/huruCamera.h"
-#include "../JaehuruEngine/Engine/public/GameObject/huruGameObject.h"
-#include "../JaehuruEngine/Engine/public/Component/huruComponent.h"
-#include "../JaehuruEngine/Engine/public/Object/huruObject.h"
-#include "../JaehuruEngine/Engine/public/Renderer/huruRenderer.h"
-#include "../JaehuruEngine/Engine/public/Resource/huruTexture.h"
+#include "Component/Camera/huruCamera.h"
+#include "GameObject/huruGameObject.h"
+#include "Component/huruComponent.h"
+#include "Object/huruObject.h"
+#include "Renderer/huruRenderer.h"
+#include "Resource/huruTexture.h"
 
 
 namespace pac

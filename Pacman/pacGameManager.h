@@ -9,7 +9,7 @@ namespace huru { class Animator; }
 
 namespace pac
 {
-    class Tile;
+    class TileManager;
 
     class GameManager
     {
@@ -21,15 +21,14 @@ namespace pac
         }
 
         void        Initialize(); // 리소스 로딩
+        void        Release();
   
         void        LoadResources();
         void        LoadScenes();
         void        LoadMap();
-        void        LoadMapFile(const wstring& filePath, graphics::Texture* texture);
 
         graphics::Texture*      GetSpriteTexture()  const { return mSpriteTexture; }
-        const vector<Tile*>&    GetTileMap()        const { return mTileMap; }
-        const vector<Tile*>&    GetPortalTiles()    const { return mPortalTiles; }
+        TileManager*            GetTileManager()    { return mTileManager; }
 
     private:
         GameManager() = default;
@@ -39,11 +38,7 @@ namespace pac
         GameManager& operator=(const GameManager&) = delete;
 
     private:
-        Animator* mAnimator;
-
         graphics::Texture* mSpriteTexture = nullptr;
-
-       vector<Tile*> mTileMap;
-       vector<Tile*> mPortalTiles;
+        TileManager* mTileManager = nullptr;
     };
 }
