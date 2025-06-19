@@ -26,7 +26,7 @@ namespace pac
 		mTargetTile(Vector2::Zero),
 		mCurrentDir(Vector2::Zero),
 		mNextDir(Vector2::Zero),
-		mSpeed(80.f),
+		mSpeed(60.f),
 		mCurrentAnimName(L""),
 		mPortalCoolTime(0.0f),
 		mPortals{ }
@@ -72,6 +72,7 @@ namespace pac
 
 		HandleInput();
 		ProcessTileNavigation();
+		CheckDotCollision();
 	}
 
 	void PlayerScript::LateUpdate()
@@ -130,8 +131,8 @@ namespace pac
 
 		Tile* tile = map[index];
 		if (!tile)	return false;
-		
-		return tile->GetTileType() == Tile::eTileType::Path || tile->GetTileType() == Tile::eTileType::Portal;
+
+		return tile->GetTileType() != Tile::eTileType::Wall && tile->GetTileType() != Tile::eTileType::Jail;
 	}
 
 	void PlayerScript::Dead()
@@ -145,8 +146,8 @@ namespace pac
 		int idxX = static_cast<int>(pos.x / Tile::Size.x);
 		int idxY = static_cast<int>(pos.y / Tile::Size.y);
 		mCurrentTile = Vector2((float)idxX, (float)idxY);
-
 		Vector2 center = SnapToTileCenter(mCurrentTile);
+
 		if ((center - pos).length() < 0.1f)
 		{
 			mTransform->SetPosition(center);
@@ -173,37 +174,19 @@ namespace pac
 				mCurrentDir = Vector2::Zero;
 		}
 
-		wstring newAnim;
-		if (mCurrentDir == DIR_RIGHT)      newAnim = L"Move_Right";
-		else if (mCurrentDir == DIR_LEFT) newAnim = L"Move_Left";
-		else if (mCurrentDir == DIR_UP)   newAnim = L"Move_Up";
-		else if (mCurrentDir == DIR_DOWN) newAnim = L"Move_Down";
-
-		if (!newAnim.empty() && newAnim != mCurrentAnimName && mAnimator)
-		{
-			mAnimator->PlayAnimation(newAnim, true);
-			mCurrentAnimName = newAnim;
-		}
-
 		if (mCurrentDir == Vector2::Zero)
 			return;
 
 		Vector2 move = mCurrentDir * mSpeed * Time::DeltaTime();
-		mTransform->SetPosition(mTransform->GetPosition() + move);
-
-		/*Vector2 move = mCurrentDir * mSpeed * Time::DeltaTime();
 		Vector2 nextPos = mTransform->GetPosition() + move;
-
 		Vector2 toCenter = center - nextPos;
-		if ((mCurrentDir.x != 0 && fabs(toCenter.x) < fabs(move.x)) ||
-			(mCurrentDir.y != 0 && fabs(toCenter.y) < fabs(move.y)))
-		{
-			mTransform->SetPosition(center);
-		}
-		else
-		{
-			mTransform->SetPosition(nextPos);
-		}*/
+
+		mTransform->SetPosition(
+			((mCurrentDir.x != 0 && fabs(toCenter.x) < fabs(move.x)) || 
+				(mCurrentDir.y != 0 && fabs(toCenter.y) < fabs(move.y)))
+			? center : nextPos);
+
+		UpdateAnimation();
 	}
 
 	Vector2 PlayerScript::SnapToTileCenter(Vector2 tilePos)
@@ -218,7 +201,7 @@ namespace pac
 	bool PlayerScript::IsOnPortalTile()
 	{
 		for (Tile* portal : mPortals)
-			if (portal->GetPosition() == mCurrentTile)
+			if (portal->GetIndex() == mCurrentTile)
 				return true;
 		return false;
 	}
@@ -228,13 +211,41 @@ namespace pac
 		if (mPortals.size() != 2) return;
 
 		// 현재 포탈 인덱스 찾기
-		int current = (mPortals[0]->GetPosition() == mCurrentTile) ? 0 : 1;
+		int current = (mPortals[0]->GetIndex() == mCurrentTile) ? 0 : 1;
 		int other = 1 - current;
 
 		// 반대 포탈 타일의 중앙 위치로 순간이동
-		Vector2 targetTile = mPortals[other]->GetPosition();
+		Vector2 targetTile = mPortals[other]->GetIndex();
 		Vector2 targetCenter = SnapToTileCenter(targetTile);
 		mTransform->SetPosition(targetCenter);
 	}
-}
 
+	void PlayerScript::UpdateAnimation()
+	{
+		wstring newAnim;
+		if (mCurrentDir == DIR_RIGHT)      newAnim = L"Move_Right";
+		else if (mCurrentDir == DIR_LEFT)  newAnim = L"Move_Left";
+		else if (mCurrentDir == DIR_UP)    newAnim = L"Move_Up";
+		else if (mCurrentDir == DIR_DOWN)  newAnim = L"Move_Down";
+
+		if (!newAnim.empty() && newAnim != mCurrentAnimName && mAnimator)
+		{
+			mAnimator->PlayAnimation(newAnim, true);
+			mCurrentAnimName = newAnim;
+		}
+	}
+
+	void PlayerScript::CheckDotCollision()
+	{
+		Vector2 playerPos = mTransform->GetPosition();
+		int idxX = static_cast<int>(playerPos.x / Tile::Size.x);
+		int idxY = static_cast<int>(playerPos.y / Tile::Size.y);
+
+		Tile* tile = mTileManager->GetTile(idxX, idxY);
+		if (tile && tile->GetTileType() == Tile::eTileType::Path && tile->HasDot())
+		{
+			tile->SetHasDot(false);  
+			// TODO: 점수 올리기, 사운드 재생 등 추가 가능
+		}
+	}
+}

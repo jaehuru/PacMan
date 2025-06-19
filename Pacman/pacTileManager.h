@@ -20,6 +20,8 @@ namespace pac
         const vector<Tile*>&    GetTileMap()        const { return mTileMap; }
         const vector<Tile*>&    GetPortalTiles()    const { return mPortalTiles; }
 
+        Tile* GetTile(int x, int y);
+        
     private:
         vector<Tile*>       mTileMap;
         vector<Tile*>       mPortalTiles;

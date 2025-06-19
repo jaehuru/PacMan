@@ -51,7 +51,7 @@ namespace pac
 			tmr->SetScale(Tile::Scale);
 			tmr->SetIndex(Vector2(tool_idxX, tool_idxY));
 
-			tile->SetPosition(tileIdxX, tileIdxY);
+			tile->SetIndex(tileIdxX, tileIdxY);
 
 			if (linearIndex >= 0 && linearIndex < static_cast<int>(mTileMap.size()))
 			{
@@ -72,5 +72,17 @@ namespace pac
 			object::Destroy(tile);
 		mTileMap.clear();
 		mPortalTiles.clear();
+	}
+
+	Tile* TileManager::GetTile(int x, int y)
+	{
+		if (x < 0 || y < 0 || x >= define::MaxMapWidth || y >= define::MaxMapHeight)
+			return nullptr;
+
+		int index = define::GetLinearIndex(x, y);
+		if (index < 0 || index >= static_cast<int>(mTileMap.size()))
+			return nullptr;
+
+		return mTileMap[index];
 	}
 }

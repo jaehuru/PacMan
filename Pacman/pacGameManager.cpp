@@ -27,8 +27,8 @@ namespace pac
 	{
 		mSpriteTexture = Resources::Load<graphics::Texture>(L"Sprite", L"../Resources/PacmanSprite.bmp");
 
-		Resources::Load<graphics::Texture>(L"Dot", L"../Resources/img/item/dot.png");
-		Resources::Load<graphics::Texture>(L"Pellet", L"../Resources/img/item/pellet.png");
+		mDotTexture = Resources::Load<graphics::Texture>(L"Dot", L"../Resources/img/item/dot.png");
+		mPelletTexture = Resources::Load<graphics::Texture>(L"Pellet", L"../Resources/img/item/pellet.png");
 	}
 
 	void GameManager::LoadScenes()

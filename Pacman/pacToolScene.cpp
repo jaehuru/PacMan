@@ -185,7 +185,7 @@ namespace pac
 			tmr->SetScale(Tile::Scale);
 			tmr->SetIndex(Vector2(tool_idxX, tool_idxY));
 
-			tile->SetPosition(tile_idxX, tile_idxY);
+			tile->SetIndex(tile_idxX, tile_idxY);
 
 			int linearIndex = define::GetLinearIndex(tile_idxX, tile_idxY);
 			if (linearIndex >= 0 && linearIndex < (int)mTileMap.size())
@@ -215,7 +215,7 @@ namespace pac
 					object::Destroy(mTileMap[linearIndex]);
 
 				Tile* tile = object::Instantiate<Tile>(ToEngineLayerType(ePacLayerType::Tile));
-				tile->SetPosition(idxX, idxY);
+				tile->SetIndex(idxX, idxY);
 
 				Transform* tr = tile->GetComponent<Transform>();
 				tr->SetPosition(

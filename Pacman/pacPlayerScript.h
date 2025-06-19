@@ -49,6 +49,10 @@ namespace pac
 		bool		IsOnPortalTile();
 		void		TeleportToOtherPortal();
 
+		void		UpdateAnimation();
+
+		void		CheckDotCollision();
+
 	private:
 		Animator*		mAnimator;
 		eState			mState;
@@ -60,10 +64,10 @@ namespace pac
 		const			Vector2 DIR_LEFT = Vector2(-1, 0);
 		const			Vector2 DIR_RIGHT = Vector2(1, 0);
 
-		Vector2			mCurrentTile;    
-		Vector2			mTargetTile;     
-		Vector2			mCurrentDir;      
-		Vector2			mNextDir;        
+		Vector2			mCurrentTile;
+		Vector2			mTargetTile;
+		Vector2			mCurrentDir;
+		Vector2			mNextDir;
 		float			mSpeed;
 
 		wstring			mCurrentAnimName;

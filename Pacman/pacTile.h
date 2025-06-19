@@ -2,11 +2,6 @@
 
 #include "GameObject/huruGameObject.h"
 
-namespace huru
-{
-	class SpriteRenderer;
-}
-
 namespace pac
 {
 	class Tile : public GameObject
@@ -21,16 +16,6 @@ namespace pac
 			Pellet
 		};
 
-		struct DotData
-		{
-			bool isCollected = false;
-		};
-
-		struct PelletData
-		{
-			bool isCollected = false;
-		};
-
 		Tile();
 		~Tile();
 
@@ -39,15 +24,20 @@ namespace pac
 		void		LateUpdate()	override;
 		void		Render(HDC hdc) override;
 
-		void		SetPosition(int x, int y)
+		void		SetIndex(int x, int y)
 		{
 			mIndexX = x;
 			mIndexY = y;
 		}
-		Vector2		GetPosition()				const { return Vector2 (mIndexX, mIndexY); }
+		Vector2		GetIndex()				const { return Vector2 (mIndexX, mIndexY); }
 
 		void		SetTileType(eTileType type)	{ mTileType = type; }
 		eTileType	GetTileType()				const { return mTileType; }
+		void		SetHasDot(bool hasDot)		{ mHasDot = hasDot; }
+		bool		HasDot() const				{ return mHasDot; }
+
+	private:
+		void		DrawDot(HDC hdc);
 
 	public:
 		static Vector2	Size;
@@ -58,5 +48,7 @@ namespace pac
 		int				mIndexY;
 
 		eTileType		mTileType;
+
+		bool			mHasDot;
 	};
 }
