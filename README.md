@@ -70,7 +70,7 @@
 
 ---
 
-# Bugs
+# Bug Issue
 
 ## 터널링 (Tunnelling) 현상
 
