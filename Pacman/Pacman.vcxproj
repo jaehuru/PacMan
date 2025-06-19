@@ -181,6 +181,7 @@
     <ClInclude Include="pacEnum.h" />
     <ClInclude Include="pacGameManager.h" />
     <ClInclude Include="Pacman.h" />
+    <ClInclude Include="pacPellet.h" />
     <ClInclude Include="pacPlayer.h" />
     <ClInclude Include="pacPlayerScript.h" />
     <ClInclude Include="pacPlayScene.h" />
@@ -194,6 +195,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pacCameraScript.cpp" />
     <ClCompile Include="pacGameManager.cpp" />
+    <ClCompile Include="pacPellet.cpp" />
     <ClCompile Include="pacPlayer.cpp" />
     <ClCompile Include="pacPlayerScript.cpp" />
     <ClCompile Include="pacPlayScene.cpp" />

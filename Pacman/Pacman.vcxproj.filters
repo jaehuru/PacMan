@@ -81,6 +81,9 @@
     <ClInclude Include="pacTileManager.h">
       <Filter>public\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="pacPellet.h">
+      <Filter>public\Contents</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -107,6 +110,9 @@
     </ClCompile>
     <ClCompile Include="pacTileManager.cpp">
       <Filter>private\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="pacPellet.cpp">
+      <Filter>private\Contents</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

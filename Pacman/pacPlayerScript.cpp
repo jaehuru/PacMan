@@ -3,6 +3,7 @@
 #include "pacGameManager.h"
 #include "pacTile.h"
 #include "pacTileManager.h"
+#include "pacPellet.h"
 //Engine
 #include "Helpers/huruInput.h"
 #include "Component/Transform/huruTransform.h"
@@ -72,7 +73,7 @@ namespace pac
 
 		HandleInput();
 		ProcessTileNavigation();
-		CheckDotCollision();
+		CollectedItem();
 	}
 
 	void PlayerScript::LateUpdate()
@@ -235,7 +236,13 @@ namespace pac
 		}
 	}
 
-	void PlayerScript::CheckDotCollision()
+	void PlayerScript::CollectedItem()
+	{
+		CollectedDot();
+		CollectedPellet();
+	}
+
+	void PlayerScript::CollectedDot()
 	{
 		Vector2 playerPos = mTransform->GetPosition();
 		int idxX = static_cast<int>(playerPos.x / Tile::Size.x);
@@ -246,6 +253,25 @@ namespace pac
 		{
 			tile->SetHasDot(false);  
 			// TODO: 점수 올리기, 사운드 재생 등 추가 가능
+		}
+	}
+
+	void PlayerScript::CollectedPellet()
+	{
+		Vector2 playerPos = mTransform->GetPosition();
+		int idxX = static_cast<int>(playerPos.x / Tile::Size.x);
+		int idxY = static_cast<int>(playerPos.y / Tile::Size.y);
+
+		Tile* tile = mTileManager->GetTile(idxX, idxY);
+		vector<GameObject*> children = tile->GetChildren();
+
+		for (GameObject* child : children)
+		{
+			Pellet* pellet = tile->FindChildOfType<Pellet>();
+			if (pellet)
+			{
+				object::Destroy(pellet);
+			}
 		}
 	}
 }

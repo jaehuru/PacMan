@@ -51,7 +51,9 @@ namespace pac
 
 		void		UpdateAnimation();
 
-		void		CheckDotCollision();
+		void		CollectedItem();
+		void		CollectedDot();
+		void		CollectedPellet();
 
 	private:
 		Animator*		mAnimator;

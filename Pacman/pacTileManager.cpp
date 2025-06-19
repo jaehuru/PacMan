@@ -1,8 +1,8 @@
 //Pacman
 #include "pacTileManager.h"
+#include "pacGameManager.h"
 #include "pacTile.h"
-#include "pacDefine.h"
-#include "pacEnum.h"
+#include "pacPellet.h"
 //Engine
 #include "Resource/huruTexture.h"
 #include "Object/huruObject.h"
@@ -61,6 +61,17 @@ namespace pac
 			if (tile->GetTileType() == Tile::eTileType::Portal)
 			{
 				mPortalTiles.push_back(tile);
+			}
+
+			if (tile->GetTileType() == Tile::eTileType::Pellet)
+			{
+				Pellet* pellet = object::Instantiate<Pellet>(ToEngineLayerType(ePacLayerType::Item), Vector2::Zero);
+				pellet->Initialize();
+				tile->AddChild(pellet);
+
+				Vector2 tilePos = tile->GetComponent<Transform>()->GetPosition();
+				Vector2 pelletPos = tilePos + Tile::Size * 0.5f;
+				pellet->GetComponent<Transform>()->SetPosition(pelletPos);
 			}
 		}
 		fclose(pFile);
