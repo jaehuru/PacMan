@@ -176,12 +176,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="pacBlinkyScript.h" />
     <ClInclude Include="pacCameraScript.h" />
+    <ClInclude Include="pacClydeScript.h" />
     <ClInclude Include="pacDefine.h" />
     <ClInclude Include="pacEnum.h" />
     <ClInclude Include="pacGameManager.h" />
+    <ClInclude Include="pacGhost.h" />
+    <ClInclude Include="pacGhostScript.h" />
+    <ClInclude Include="pacInkyScript.h" />
     <ClInclude Include="Pacman.h" />
     <ClInclude Include="pacPellet.h" />
+    <ClInclude Include="pacPinkyScript.h" />
     <ClInclude Include="pacPlayer.h" />
     <ClInclude Include="pacPlayerScript.h" />
     <ClInclude Include="pacPlayScene.h" />
@@ -193,9 +199,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="pacBlinkyScript.cpp" />
     <ClCompile Include="pacCameraScript.cpp" />
+    <ClCompile Include="pacClydeScript.cpp" />
     <ClCompile Include="pacGameManager.cpp" />
+    <ClCompile Include="pacGhost.cpp" />
+    <ClCompile Include="pacGhostScript.cpp" />
+    <ClCompile Include="pacInkyScript.cpp" />
     <ClCompile Include="pacPellet.cpp" />
+    <ClCompile Include="pacPinkyScript.cpp" />
     <ClCompile Include="pacPlayer.cpp" />
     <ClCompile Include="pacPlayerScript.cpp" />
     <ClCompile Include="pacPlayScene.cpp" />

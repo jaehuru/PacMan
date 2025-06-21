@@ -1,16 +1,11 @@
 // Pacman 
 #include "pacPlayScene.h"
 #include "pacGameManager.h"
-#include "pacToolScene.h"
 #include "pacPlayer.h"
-#include "pacPlayerScript.h"
+#include "pacGhost.h"
+#include "pacBlinkyScript.h"
 // Engine 
-#include "Component/Camera/huruCamera.h"
-#include "GameObject/huruGameObject.h"
-#include "Component/huruComponent.h"
 #include "Object/huruObject.h"
-#include "Renderer/huruRenderer.h"
-#include "Resource/huruTexture.h"
 
 
 namespace pac
@@ -30,8 +25,11 @@ namespace pac
 		GameManager::GetInstance().LoadMap();
 
 		// Player
-		GameObject* player = object::Instantiate<Player>(ToEngineLayerType(ePacLayerType::Player),
-																					(Vector2(558.f, 258.f)));
+		Player* player = object::Instantiate<Player>(ToEngineLayerType(ePacLayerType::Player), (Vector2(558.f, 258.f)));
+
+		//Ghost
+		Ghost* blinky = object::Instantiate<Ghost>(ToEngineLayerType(ePacLayerType::Ghost), (Vector2(558.f, 210.f)));
+		blinky->AddComponent<BlinkyScript>();
 	}
 
 	void PlayScene::Update()

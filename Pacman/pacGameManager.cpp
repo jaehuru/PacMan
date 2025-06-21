@@ -25,8 +25,10 @@ namespace pac
 
 	void GameManager::LoadResources()
 	{
+		// SheetSprite
 		mSpriteTexture = Resources::Load<graphics::Texture>(L"Sprite", L"../Resources/PacmanSprite.bmp");
 
+		// Dot & Pellet
 		mDotTexture = Resources::Load<graphics::Texture>(L"Dot", L"../Resources/img/item/dot.png");
 		mPelletTexture = Resources::Load<graphics::Texture>(L"Pellet", L"../Resources/img/item/pellet.png");
 	}
@@ -43,5 +45,10 @@ namespace pac
 	void GameManager::LoadMap()
 	{
 		mTileManager->LoadMapFile(L"../Resources/PacmanMap.tile", mSpriteTexture);
+	}
+
+	void GameManager::RegisterGhost(Ghost* ghost)
+	{
+		mGhosts.push_back(ghost);
 	}
 }

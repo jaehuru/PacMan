@@ -4,12 +4,19 @@
 #include "pacEnum.h"
 #include "pacDefine.h"
 
-namespace huru::graphics { class Texture; }
-namespace huru { class Animator; }
+namespace huru 
+{
+    namespace graphics
+    {
+        class Texture;
+    }
+    class Animator; 
+}
 
 namespace pac
 {
     class TileManager;
+    class Ghost;
 
     class GameManager
     {
@@ -26,11 +33,13 @@ namespace pac
         void        LoadResources();
         void        LoadScenes();
         void        LoadMap();
+        void        RegisterGhost(Ghost* ghost);
 
         graphics::Texture*      GetSpriteTexture()  const { return mSpriteTexture; }
         TileManager*            GetTileManager()    { return mTileManager; }
         graphics::Texture* GetDotTexture() { return mDotTexture; }
         graphics::Texture* GetPelletTexture() { return mPelletTexture; }
+        const vector<Ghost*>& GetGhosts() const { return mGhosts; }
 
     private:
         GameManager() = default;
@@ -44,5 +53,6 @@ namespace pac
         TileManager* mTileManager = nullptr;
         graphics::Texture* mDotTexture = nullptr;
         graphics::Texture* mPelletTexture = nullptr;
+        vector<Ghost*> mGhosts;
     };
 }

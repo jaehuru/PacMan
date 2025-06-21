@@ -1,11 +1,9 @@
 #pragma once
 
-#include "Common/CommonInclude.h"
 #include "GameObject/huruGameObject.h"
 
 namespace huru 
 { 
-	class Transform;
 	class Animator;
 }
 
@@ -15,7 +13,6 @@ namespace pac
 	{
 	public:
 		Player();
-		~Player();
 
 		void Initialize() override;
 		void Update() override;
@@ -23,7 +20,6 @@ namespace pac
 		void Render(HDC hdc) override;
 
 	private:
-		Transform* mTransform;
 		Animator* mAnimator;
 	};
 }

@@ -10,7 +10,7 @@ namespace pac
         Background,
         Tile,
         Item,
-        Enemy,
+        Ghost,
         Player,
         Particle,
         Max = (int)::huru::enums::eLayerType::Max

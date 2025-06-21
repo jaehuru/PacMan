@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Component/Script/huruScript.h"
-#include "Resource/huruTexture.h"
 
 namespace huru
 {

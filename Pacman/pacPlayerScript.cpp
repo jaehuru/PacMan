@@ -4,6 +4,8 @@
 #include "pacTile.h"
 #include "pacTileManager.h"
 #include "pacPellet.h"
+#include "pacGhost.h"
+#include "pacGhostScript.h"
 //Engine
 #include "Helpers/huruInput.h"
 #include "Component/Transform/huruTransform.h"
@@ -27,7 +29,7 @@ namespace pac
 		mTargetTile(Vector2::Zero),
 		mCurrentDir(Vector2::Zero),
 		mNextDir(Vector2::Zero),
-		mSpeed(60.f),
+		mSpeed(50.f),
 		mCurrentAnimName(L""),
 		mPortalCoolTime(0.0f),
 		mPortals{ }
@@ -263,15 +265,24 @@ namespace pac
 		int idxY = static_cast<int>(playerPos.y / Tile::Size.y);
 
 		Tile* tile = mTileManager->GetTile(idxX, idxY);
-		vector<GameObject*> children = tile->GetChildren();
-
-		for (GameObject* child : children)
+		
+		Pellet* pellet = tile->FindChildOfType<Pellet>();
+		if (pellet)
 		{
-			Pellet* pellet = tile->FindChildOfType<Pellet>();
-			if (pellet)
+			object::Destroy(pellet);
+
+			const vector<Ghost*> ghosts = GameManager::GetInstance().GetGhosts();
+			for (auto ghost : ghosts)
 			{
-				object::Destroy(pellet);
+				if (ghost)
+				{
+					GhostScript* ghostscript = ghost->GetComponent<GhostScript>();
+					if (ghostscript)
+						ghostscript->BeginNerf();
+				}
 			}
 		}
+
+		
 	}
 }

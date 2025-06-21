@@ -37,6 +37,12 @@
     <Filter Include="private\Manager">
       <UniqueIdentifier>{fa57ffb4-002c-4bbc-96c1-8f770655c08a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="public\Scripts\Ghost">
+      <UniqueIdentifier>{408a099a-be10-435f-b984-4141081c28bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="private\Scripts\Ghost">
+      <UniqueIdentifier>{7f35f097-bfe3-48cb-9f19-ffb50afa0cc6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -84,6 +90,24 @@
     <ClInclude Include="pacPellet.h">
       <Filter>public\Contents</Filter>
     </ClInclude>
+    <ClInclude Include="pacGhostScript.h">
+      <Filter>public\Scripts\Ghost</Filter>
+    </ClInclude>
+    <ClInclude Include="pacBlinkyScript.h">
+      <Filter>public\Scripts\Ghost</Filter>
+    </ClInclude>
+    <ClInclude Include="pacClydeScript.h">
+      <Filter>public\Scripts\Ghost</Filter>
+    </ClInclude>
+    <ClInclude Include="pacInkyScript.h">
+      <Filter>public\Scripts\Ghost</Filter>
+    </ClInclude>
+    <ClInclude Include="pacPinkyScript.h">
+      <Filter>public\Scripts\Ghost</Filter>
+    </ClInclude>
+    <ClInclude Include="pacGhost.h">
+      <Filter>public\Contents</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -112,6 +136,24 @@
       <Filter>private\Manager</Filter>
     </ClCompile>
     <ClCompile Include="pacPellet.cpp">
+      <Filter>private\Contents</Filter>
+    </ClCompile>
+    <ClCompile Include="pacGhostScript.cpp">
+      <Filter>private\Scripts\Ghost</Filter>
+    </ClCompile>
+    <ClCompile Include="pacBlinkyScript.cpp">
+      <Filter>private\Scripts\Ghost</Filter>
+    </ClCompile>
+    <ClCompile Include="pacClydeScript.cpp">
+      <Filter>private\Scripts\Ghost</Filter>
+    </ClCompile>
+    <ClCompile Include="pacInkyScript.cpp">
+      <Filter>private\Scripts\Ghost</Filter>
+    </ClCompile>
+    <ClCompile Include="pacPinkyScript.cpp">
+      <Filter>private\Scripts\Ghost</Filter>
+    </ClCompile>
+    <ClCompile Include="pacGhost.cpp">
       <Filter>private\Contents</Filter>
     </ClCompile>
   </ItemGroup>
