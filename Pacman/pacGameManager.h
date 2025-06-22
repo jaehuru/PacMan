@@ -17,6 +17,7 @@ namespace pac
 {
     class TileManager;
     class Ghost;
+    class Player;
 
     class GameManager
     {
@@ -35,11 +36,13 @@ namespace pac
         void        LoadMap();
         void        RegisterGhost(Ghost* ghost);
 
-        graphics::Texture*      GetSpriteTexture()  const { return mSpriteTexture; }
-        TileManager*            GetTileManager()    { return mTileManager; }
-        graphics::Texture* GetDotTexture() { return mDotTexture; }
-        graphics::Texture* GetPelletTexture() { return mPelletTexture; }
-        const vector<Ghost*>& GetGhosts() const { return mGhosts; }
+        graphics::Texture*      GetSpriteTexture() const    { return mSpriteTexture; }
+        TileManager*            GetTileManager() const      { return mTileManager; }
+        graphics::Texture*      GetDotTexture() const       { return mDotTexture; }
+        graphics::Texture*      GetPelletTexture() const    { return mPelletTexture; }
+        const vector<Ghost*>&   GetGhosts() const           { return mGhosts; }
+        void                    SetPlayer(Player* player)   { mPlayer = player; }
+        Player*           GetPlayer() const                 { return mPlayer; }
 
     private:
         GameManager() = default;
@@ -49,10 +52,11 @@ namespace pac
         GameManager& operator=(const GameManager&) = delete;
 
     private:
-        graphics::Texture* mSpriteTexture = nullptr;
-        TileManager* mTileManager = nullptr;
-        graphics::Texture* mDotTexture = nullptr;
-        graphics::Texture* mPelletTexture = nullptr;
-        vector<Ghost*> mGhosts;
+        graphics::Texture*      mSpriteTexture = nullptr;
+        TileManager*            mTileManager = nullptr;
+        graphics::Texture*      mDotTexture = nullptr;
+        graphics::Texture*      mPelletTexture = nullptr;
+        Player*                 mPlayer = nullptr;
+        vector<Ghost*>          mGhosts;
     };
 }

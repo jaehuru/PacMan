@@ -1,6 +1,9 @@
 //Pacman
 #include "pacBlinkyScript.h"
 #include "pacGhost.h"
+#include "pacPlayer.h"
+#include "pacPlayerScript.h"
+#include "pacGameManager.h"
 //Engine
 #include "Component/Transform/huruTransform.h"
 #include "Component/Animator/huruAnimator.h"
@@ -65,23 +68,32 @@ namespace pac
 
 	Vector2 BlinkyScript::CalculateTargetPosition()
 	{
-		return Vector2();
-	}
-
-	void BlinkyScript::EndNerf()
-	{
-		GhostScript::EndNerf();
-
-		if (mAnimator)
+		Player* pacman = GameManager::GetInstance().GetPlayer();
+		if (pacman)
 		{
-			// 현재 이동 방향에 따라 알맞은 애니메이션 재생
-			mAnimator->PlayAnimation(L"Blinky_Left", true);
+			PlayerScript* script = pacman->GetComponent<PlayerScript>();
+			if (script)
+			{
+				Vector2 pos = script->GetOwner()->GetComponent<Transform>()->GetPosition();
+				return pos;
+			}
 		}
+		return Vector2::Zero;
 	}
 
-	void BlinkyScript::HandleNormalState()
+	void BlinkyScript::PlayAnimByDir(const Vector2& direction)
 	{
-		// 개별적으로 처리 virtual 함수
-	}
+		wstring newAnim;
 
+		if (fabs(direction.x) > fabs(direction.y))
+		{
+			newAnim = (direction.x > 0) ? L"Blinky_Right" : L"Blinky_Left";
+		}
+		else
+		{
+			newAnim = (direction.y > 0) ? L"Blinky_Down" : L"Blinky_Up";
+		}
+
+		UpdateAnimation(newAnim);
+	}
 }

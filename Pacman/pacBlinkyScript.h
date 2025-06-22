@@ -21,9 +21,8 @@ namespace pac
 
 		Vector2				CalculateTargetPosition() override;
 
-		void				EndNerf() override;
-		void				HandleNormalState() override;
-	private:
+	protected:
+		void				PlayAnimByDir(const Vector2& direction) override;
 
 	};
 }

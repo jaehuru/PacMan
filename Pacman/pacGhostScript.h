@@ -37,20 +37,33 @@ namespace pac
 		void				SetState(eState state)	{ mState = state; }
 		eState				GetState() const		{ return mState; }
 
-		virtual	Vector2		CalculateTargetPosition() = 0;
-
 		void				BeginNerf();
-		virtual void		EndNerf();
 
 	protected:
-		virtual void		HandleNormalState();
+		virtual	Vector2		CalculateTargetPosition() = 0;
+
+		virtual void		PlayAnimByDir(const Vector2& direction) = 0;
+		void				UpdateAnimation(const wstring& newAnim);
+
+	private:
+		void				HandleNormalState();
 		void				HandleNerfState();
 		void				HandleDeadState();
 
+		void				EndNerf();
+
+		Vector2Int			ConvertToTileIndex(const Vector2& worldPos);
+		Vector2				TileIndexToWorldPosition(const Vector2Int& tileIndex);
+
+		void				MoveTowards(const Vector2& targetPosition, float deltaTime);
+
+
 	protected:
+		Animator*			mAnimator;
+
+	private:
 		eState				mState;
 		Transform*			mTransform;
-		Animator*			mAnimator;
 		SpriteRenderer*		mSpriteRenderer;
 
 		float				mFrightenedTimer;
@@ -60,6 +73,10 @@ namespace pac
 		const float			FrightenedDuration;
 		const float			FlashStartTime;   
 		const float			FlashInterval;
+
+		float				mSpeed;
+
+		wstring				mCurrentAnimName;
 	};
 }
 

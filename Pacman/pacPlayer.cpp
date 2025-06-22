@@ -13,6 +13,7 @@ namespace pac
 		mAnimator = AddComponent<Animator>();
 		SetLayerType(ToEngineLayerType(ePacLayerType::Player));
 		AddComponent<PlayerScript>();
+		GameManager::GetInstance().SetPlayer(this);
 	}
 
 	void Player::Initialize()

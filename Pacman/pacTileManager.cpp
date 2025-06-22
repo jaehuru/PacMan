@@ -75,6 +75,21 @@ namespace pac
 			}
 		}
 		fclose(pFile);
+
+		int maxX = 0;
+		int maxY = 0;
+		for (Tile* tile : mTileMap)
+		{
+			if (tile)
+			{
+				int x = static_cast<int>(tile->GetIndex().x);
+				int y = static_cast<int>(tile->GetIndex().y);
+				if (x > maxX) maxX = x;
+				if (y > maxY) maxY = y;
+			}
+		}
+		mMapWidth = maxX + 1;
+		mMapHeight = maxY + 1;
 	}
 
 	void TileManager::Clear()
