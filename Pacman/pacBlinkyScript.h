@@ -19,8 +19,6 @@ namespace pac
 		void				OnCollisionStay(Collider* other) override;
 		void				OnCollisionExit(Collider* other) override;
 
-		Vector2				CalculateTargetPosition() override;
-
 	protected:
 		void				PlayAnimByDir(const Vector2& direction) override;
 

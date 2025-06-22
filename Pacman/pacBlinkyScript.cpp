@@ -66,21 +66,6 @@ namespace pac
 		GhostScript::OnCollisionExit(other);
 	}
 
-	Vector2 BlinkyScript::CalculateTargetPosition()
-	{
-		Player* pacman = GameManager::GetInstance().GetPlayer();
-		if (pacman)
-		{
-			PlayerScript* script = pacman->GetComponent<PlayerScript>();
-			if (script)
-			{
-				Vector2 pos = script->GetOwner()->GetComponent<Transform>()->GetPosition();
-				return pos;
-			}
-		}
-		return Vector2::Zero;
-	}
-
 	void BlinkyScript::PlayAnimByDir(const Vector2& direction)
 	{
 		wstring newAnim;

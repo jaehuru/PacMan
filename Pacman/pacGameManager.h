@@ -42,7 +42,7 @@ namespace pac
         graphics::Texture*      GetPelletTexture() const    { return mPelletTexture; }
         const vector<Ghost*>&   GetGhosts() const           { return mGhosts; }
         void                    SetPlayer(Player* player)   { mPlayer = player; }
-        Player*           GetPlayer() const                 { return mPlayer; }
+        Player*                 GetPlayer() const           { return mPlayer; }
 
     private:
         GameManager() = default;

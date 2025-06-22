@@ -176,7 +176,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
-    <ClInclude Include="pacAI.h" />
     <ClInclude Include="pacBlinkyScript.h" />
     <ClInclude Include="pacCameraScript.h" />
     <ClInclude Include="pacClydeScript.h" />
@@ -200,7 +199,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="pacAI.cpp" />
     <ClCompile Include="pacBlinkyScript.cpp" />
     <ClCompile Include="pacCameraScript.cpp" />
     <ClCompile Include="pacClydeScript.cpp" />

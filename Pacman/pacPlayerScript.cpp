@@ -25,6 +25,10 @@ namespace pac
 		mAnimator(nullptr),
 		mTransform(nullptr),
 		mTileManager(nullptr),
+		DIR_UP(Vector2(0, -1)),
+		DIR_DOWN(Vector2(0, 1)),
+		DIR_LEFT(Vector2(-1, 0)),
+		DIR_RIGHT(Vector2(1, 0)),
 		mCurrentTile(Vector2::Zero),
 		mTargetTile(Vector2::Zero),
 		mCurrentDir(Vector2::Zero),
@@ -45,7 +49,7 @@ namespace pac
 	void PlayerScript::Initialize()
 	{
 		mTransform = GetOwner()->GetComponent<Transform>();
-
+	
 		if (mAnimator == nullptr)
 		{
 			mAnimator = GetOwner()->GetComponent<Animator>();
@@ -184,10 +188,12 @@ namespace pac
 		Vector2 nextPos = mTransform->GetPosition() + move;
 		Vector2 toCenter = center - nextPos;
 
-		mTransform->SetPosition(
+		mTransform->SetPosition
+		(
 			((mCurrentDir.x != 0 && fabs(toCenter.x) < fabs(move.x)) || 
 				(mCurrentDir.y != 0 && fabs(toCenter.y) < fabs(move.y)))
-			? center : nextPos);
+			? center : nextPos
+		);
 
 		UpdateAnimation();
 	}

@@ -43,12 +43,6 @@
     <Filter Include="private\Scripts\Ghost">
       <UniqueIdentifier>{7f35f097-bfe3-48cb-9f19-ffb50afa0cc6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="public\AI">
-      <UniqueIdentifier>{725022ab-77a5-4fc9-9c77-b2dddea67e66}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="private\AI">
-      <UniqueIdentifier>{028b5280-1a20-47e1-a9ff-d9f7477f4d7b}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -114,9 +108,6 @@
     <ClInclude Include="pacGhost.h">
       <Filter>public\Contents</Filter>
     </ClInclude>
-    <ClInclude Include="pacAI.h">
-      <Filter>public\AI</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -164,9 +155,6 @@
     </ClCompile>
     <ClCompile Include="pacGhost.cpp">
       <Filter>private\Contents</Filter>
-    </ClCompile>
-    <ClCompile Include="pacAI.cpp">
-      <Filter>private\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

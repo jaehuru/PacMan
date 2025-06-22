@@ -60,10 +60,10 @@ namespace pac
 		Transform*		mTransform;
 		TileManager*	mTileManager;
 
-		const			Vector2 DIR_UP = Vector2(0, -1);
-		const			Vector2 DIR_DOWN = Vector2(0, 1);
-		const			Vector2 DIR_LEFT = Vector2(-1, 0);
-		const			Vector2 DIR_RIGHT = Vector2(1, 0);
+		const Vector2	DIR_UP;
+		const Vector2	DIR_DOWN;
+		const Vector2	DIR_LEFT;
+		const Vector2	DIR_RIGHT;
 
 		Vector2			mCurrentTile;
 		Vector2			mTargetTile;

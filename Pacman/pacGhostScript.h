@@ -40,10 +40,12 @@ namespace pac
 		void				BeginNerf();
 
 	protected:
-		virtual	Vector2		CalculateTargetPosition() = 0;
-
 		virtual void		PlayAnimByDir(const Vector2& direction) = 0;
 		void				UpdateAnimation(const wstring& newAnim);
+
+		virtual void		UpdateMovement(bool isEscaping);
+		virtual void		UpdateDirection(bool isEscaping);
+		virtual Vector2		GetTargetPosition(const Vector2& playerPos) { return playerPos; }
 
 	private:
 		void				HandleNormalState();
@@ -52,12 +54,10 @@ namespace pac
 
 		void				EndNerf();
 
-		Vector2Int			ConvertToTileIndex(const Vector2& worldPos);
-		Vector2				TileIndexToWorldPosition(const Vector2Int& tileIndex);
+		Vector2				GetPlayerPosition();
+		bool				IsWall(int tileX, int tileY);
 
-		void				MoveTowards(const Vector2& targetPosition, float deltaTime);
-
-
+		void				UpdateNerfTimers();
 	protected:
 		Animator*			mAnimator;
 
@@ -77,6 +77,15 @@ namespace pac
 		float				mSpeed;
 
 		wstring				mCurrentAnimName;
+
+		Vector2				mCurrentDirection;
+		Vector2				mTargetTileCenter;
+
+		const Vector2		DIR_UP;
+		const Vector2		DIR_DOWN;
+		const Vector2		DIR_LEFT;
+		const Vector2		DIR_RIGHT;
+		const Vector2		directions[4] = { DIR_UP, DIR_DOWN, DIR_LEFT, DIR_RIGHT };
 	};
 }
 
