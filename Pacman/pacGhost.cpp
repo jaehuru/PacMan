@@ -4,16 +4,13 @@
 #include "pacGameManager.h"
 //Engine
 #include "Component/Animator/huruAnimator.h"
-#include "Component/SpriteRenderer/huruSpriteRenderer.h"
 
 namespace pac
 {
 	Ghost::Ghost() :
-		mAnimator(nullptr),
-		mSpriteRenderer(nullptr)
+		mAnimator(nullptr)
 	{
 		mAnimator = AddComponent<Animator>();
-		//mSpriteRenderer = AddComponent<SpriteRenderer>();
 		SetLayerType(ToEngineLayerType(ePacLayerType::Ghost));
 		GameManager::GetInstance().RegisterGhost(this);
 	}

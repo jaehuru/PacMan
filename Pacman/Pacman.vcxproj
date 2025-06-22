@@ -194,6 +194,7 @@
     <ClInclude Include="pacTile.h" />
     <ClInclude Include="pacTileManager.h" />
     <ClInclude Include="pacToolScene.h" />
+    <ClInclude Include="pacUtility.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -214,6 +215,7 @@
     <ClCompile Include="pacTile.cpp" />
     <ClCompile Include="pacTileManager.cpp" />
     <ClCompile Include="pacToolScene.cpp" />
+    <ClCompile Include="pacUtility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Pacman.rc" />

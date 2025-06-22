@@ -8,10 +8,10 @@ namespace pac
     {
         None = (int)::huru::enums::eLayerType::None,
         Background,
-        Tile,
         Item,
         Ghost,
         Player,
+        Tile,
         Particle,
         Max = (int)::huru::enums::eLayerType::Max
     };

@@ -6,6 +6,7 @@
 #include "pacTileManager.h"
 #include "pacPlayerScript.h"
 #include "pacPlayer.h"
+#include "pacUtility.h"
 //Engine
 #include "Component/Transform/huruTransform.h"
 #include "Component/Animator/huruAnimator.h"
@@ -20,7 +21,6 @@ namespace pac
 		mState(eState::Normal),
 		mTransform(nullptr),
 		mAnimator(nullptr),
-		mSpriteRenderer(nullptr),
 		mFrightenedTimer(0.f),
 		mIsFlashing(false),
 		mFlashTimer(0.f),
@@ -28,13 +28,19 @@ namespace pac
 		FlashStartTime(3.f),
 		FlashInterval(0.2f),
 		mSpeed(46.f),
+		mNormalSpeed(46.f),
+		mNerfSpeed(30.f),
+		mDeadSpeed(100.f),
 		mCurrentAnimName(L""),
 		mCurrentDirection(Vector2::Zero),
 		mTargetTileCenter(Vector2::Zero),
 		DIR_UP(Vector2(0, -1)),
 		DIR_DOWN(Vector2(0, 1)),
 		DIR_LEFT(Vector2(-1, 0)),
-		DIR_RIGHT(Vector2(1, 0))
+		DIR_RIGHT(Vector2(1, 0)),
+		mJailPos(Vector2(558.f, 236.f)),
+		mDeadWaitTimer(0.f),
+		mPortalCoolTime(0.f)
 	{
 
 	}
@@ -48,19 +54,19 @@ namespace pac
 	{
 		mTransform = GetOwner()->GetComponent<Transform>();
 		mAnimator = GetOwner()->GetComponent<Animator>();
-		mSpriteRenderer = GetOwner()->GetComponent<SpriteRenderer>();
-		if (mAnimator)
-		{
-			mAnimator->CreateAnimationByFolder(L"Nerf_Blue", L"../Resources/img/ghost/nerf/blue", Vector2::Zero, 0.1f);
-			mAnimator->CreateAnimationByFolder(L"Nerf_White", L"../Resources/img/ghost/nerf/white", Vector2::Zero, 0.1f);
-		}
+		mPortals = GameManager::GetInstance().GetTileManager()->GetPortalTiles();
+		
+		mAnimator->CreateAnimationByFolder(L"Nerf_Blue", L"../Resources/img/ghost/nerf/blue", Vector2::Zero, 0.1f);
+		mAnimator->CreateAnimationByFolder(L"Nerf_White", L"../Resources/img/ghost/nerf/white", Vector2::Zero, 0.1f);
+		mAnimator->CreateAnimationByFolder(L"Dead_UP", L"../Resources/img/ghost/dead/up", Vector2::Zero, 0.1f);
+		mAnimator->CreateAnimationByFolder(L"Dead_Down", L"../Resources/img/ghost/dead/down", Vector2::Zero, 0.1f);
+		mAnimator->CreateAnimationByFolder(L"Dead_Left", L"../Resources/img/ghost/dead/left", Vector2::Zero, 0.1f);
+		mAnimator->CreateAnimationByFolder(L"Dead_Right", L"../Resources/img/ghost/dead/right", Vector2::Zero, 0.1f);
 
 		mCurrentDirection = DIR_UP;
 
-		Vector2 pos = mTransform->GetPosition();
-		int idxX = static_cast<int>(pos.x / Tile::Size.x);
-		int idxY = static_cast<int>(pos.y / Tile::Size.y);
-		mTargetTileCenter = Vector2((idxX + 0.5f) * Tile::Size.x, (idxY + 0.5f) * Tile::Size.y);
+		Vector2 tilePos = util::WorldToTile(mTransform->GetPosition());
+		mTargetTileCenter = util::SnapToTileCenter(tilePos);
 	}
 
 	void GhostScript::Update()
@@ -72,10 +78,13 @@ namespace pac
 			break;
 		case eState::Nerf:
 			HandleNerfState();
+			ConnectedPlayerInNerf();
 			break;
 		case eState::Dead:
 			HandleDeadState();
 			break;
+		case eState::Wait:
+			HandleWaitState();
 		}
 	}
 
@@ -87,21 +96,6 @@ namespace pac
 	void GhostScript::Render(HDC hdc)
 	{
 		Script::Render(hdc);
-	}
-
-	void GhostScript::OnCollisionEnter(Collider* other)
-	{
-		Script::OnCollisionEnter(other);
-	}
-
-	void GhostScript::OnCollisionStay(Collider* other)
-	{
-		Script::OnCollisionStay(other);
-	}
-
-	void GhostScript::OnCollisionExit(Collider* other)
-	{
-		Script::OnCollisionExit(other);
 	}
 
 	void GhostScript::HandleNerfState()
@@ -119,7 +113,27 @@ namespace pac
 
 	void GhostScript::HandleDeadState()
 	{
-		// 스프라이트 이동 방향에 따라 상하좌우 이미지 렌더 처리
+		int jailTileX = static_cast<int>(mJailPos.x / Tile::Size.x);
+		int jailTileY = static_cast<int>(mJailPos.y / Tile::Size.y);
+
+		UpdateDeadMovement(jailTileX, jailTileY);
+	}
+
+	void GhostScript::HandleWaitState()
+	{
+		mDeadWaitTimer -= Time::DeltaTime();
+		if (mDeadWaitTimer <= 0.f)
+		{
+			mState = eState::Normal;
+			mSpeed = mNormalSpeed;
+
+			mCurrentDirection = DIR_UP;
+
+			Vector2 jailTile = util::WorldToTile(mJailPos);
+			mTargetTileCenter = util::SnapToTileCenter(jailTile);
+
+			PlayAnimByDir(mCurrentDirection);
+		}
 	}
 
 	void GhostScript::BeginNerf()
@@ -130,7 +144,7 @@ namespace pac
 		mState = eState::Nerf;
 		mFrightenedTimer = FrightenedDuration;
 		mIsFlashing = false;
-		mSpeed = 30.f;
+		mSpeed = mNerfSpeed;
 
 		
 		mAnimator->PlayAnimation(L"Nerf_Blue", true);
@@ -140,7 +154,7 @@ namespace pac
 	{
 		mState = eState::Normal;
 		mIsFlashing = false;
-		mSpeed = 48.f;
+		mSpeed = mNormalSpeed;
 
 		PlayAnimByDir(mCurrentDirection);
 	}
@@ -161,23 +175,35 @@ namespace pac
 	void GhostScript::UpdateMovement(bool isEscaping)
 	{
 		Vector2 pos = mTransform->GetPosition();
-		int idxX = static_cast<int>(pos.x / Tile::Size.x);
-		int idxY = static_cast<int>(pos.y / Tile::Size.y);
-		Vector2 currentTile = Vector2((float)idxX, (float)idxY);
-		Vector2 center = Vector2((idxX + 0.5f) * Tile::Size.x, (idxY + 0.5f) * Tile::Size.y);
+		Vector2 tilePos = util::WorldToTile(pos);
+		Vector2 center = util::SnapToTileCenter(tilePos);
 
 		if ((center - pos).length() < 0.1f)
 		{
 			mTransform->SetPosition(center);
+
+			if (mPortalCoolTime <= 0.0f)
+			{
+				if (util::IsOnPortalTile(tilePos, mPortals))
+				{
+					util::TeleportToOtherPortal(tilePos, mTransform, mPortals);
+					mPortalCoolTime = 0.08f;
+					return;
+				}
+			}
+			else
+			{
+				mPortalCoolTime -= Time::DeltaTime();
+			}
+
 			Vector2 prevDir = mCurrentDirection;
 			UpdateDirection(isEscaping);
 
 			if (mCurrentDirection != prevDir && mState == eState::Normal)
 				PlayAnimByDir(mCurrentDirection);
 
-			int nextX = idxX + static_cast<int>(mCurrentDirection.x);
-			int nextY = idxY + static_cast<int>(mCurrentDirection.y);
-			mTargetTileCenter = Vector2((nextX + 0.5f) * Tile::Size.x, (nextY + 0.5f) * Tile::Size.y);
+			Vector2 nextTile = tilePos + mCurrentDirection;
+			mTargetTileCenter = util::SnapToTileCenter(nextTile);
 		}
 
 		if (mCurrentDirection == Vector2::Zero)
@@ -198,9 +224,10 @@ namespace pac
 	void GhostScript::UpdateDirection(bool isEscaping)
 	{
 		Vector2 playerPos = GetPlayerPosition();
-		Vector2 currentTileCenter = mTargetTileCenter;
-		int idxX = static_cast<int>(currentTileCenter.x / Tile::Size.x);
-		int idxY = static_cast<int>(currentTileCenter.y / Tile::Size.y);
+		Vector2 tilePos = util::WorldToTile(mTargetTileCenter);
+
+		int idxX = static_cast<int>(tilePos.x);
+		int idxY = static_cast<int>(tilePos.y);
 
 		Vector2 bestDir = mCurrentDirection;
 		float bestScore = isEscaping ? -FLT_MAX : FLT_MAX;
@@ -233,9 +260,28 @@ namespace pac
 		}
 
 		if (!hasValid)
-			bestDir = -mCurrentDirection; // 막다른길이면 뒤로라도
+			bestDir = -mCurrentDirection;
 
 		mCurrentDirection = bestDir;
+	}
+
+	void GhostScript::PlayAnimByDir(const Vector2& direction)
+	{
+		if (direction == Vector2::Zero)
+		{
+			mAnimator->Stop();
+			mCurrentAnimName = L"";
+			return;
+		}
+	}
+
+	void GhostScript::UpdateAnimation(const wstring& newAnim)
+	{
+		if (!newAnim.empty() && newAnim != mCurrentAnimName && mAnimator)
+		{
+			mAnimator->PlayAnimation(newAnim, true);
+			mCurrentAnimName = newAnim;
+		}
 	}
 
 	void GhostScript::UpdateNerfTimers()
@@ -260,24 +306,123 @@ namespace pac
 			mFlashTimer -= Time::DeltaTime();
 			if (mFlashTimer <= 0.f)
 			{
-				if (mAnimator->GetActiveAnimationName() == L"Nerf_White")
-					mAnimator->PlayAnimation(L"Nerf_Blue", true);
-				else
-					mAnimator->PlayAnimation(L"Nerf_White", true);
+				mAnimator->PlayAnimation
+				(
+					(mAnimator->GetActiveAnimationName() == L"Nerf_White") ?
+					L"Nerf_Blue" : L"Nerf_White", true
+				);
 
 				mFlashTimer = FlashInterval;
 			}
 		}
 	}
 
-	void GhostScript::UpdateAnimation(const wstring& newAnim)
+	void GhostScript::ConnectedPlayerInNerf()
 	{
-		if (!newAnim.empty() && newAnim != mCurrentAnimName && mAnimator)
+		Vector2 playerPos = GetPlayerPosition();
+		Vector2 ghostPos = mTransform->GetPosition();
+
+		Vector2 pTile = util::WorldToTile(playerPos);
+		Vector2 gTile = util::WorldToTile(ghostPos);
+
+		if (pTile == gTile)
 		{
-			mAnimator->PlayAnimation(newAnim, true);
-			mCurrentAnimName = newAnim;
+			Sleep(300);
+
+			mState = eState::Dead;
+			mSpeed = mDeadSpeed;
+			DeadByDirection(mCurrentDirection);
 		}
 	}
-	
+
+	void GhostScript::DeadByDirection(const Vector2& direction)
+	{
+		const wstring anim = (fabs(direction.x) > fabs(direction.y))
+			? (direction.x > 0 ? L"Dead_Right" : L"Dead_Left")
+			: (direction.y > 0 ? L"Dead_Down" : L"Dead_UP");
+
+		mAnimator->PlayAnimation(anim, true);
+	}
+
+	void GhostScript::UpdateDeadMovement(int targetTileX, int targetTileY)
+	{
+		Vector2 pos = mTransform->GetPosition();
+		Vector2 tilePos = util::WorldToTile(pos);
+		Vector2 center = util::SnapToTileCenter(tilePos);
+
+		if ((center - pos).length() < 0.1f)
+		{
+			mTransform->SetPosition(center);
+
+			if (tilePos.x == targetTileX && tilePos.y == targetTileY)
+			{
+				mTransform->SetPosition(mJailPos);
+				mState = eState::Wait;
+				mDeadWaitTimer = 1.0f;  // 1초 대기
+				mSpeed = 0.f;
+				PlayAnimByDir(Vector2::Zero);
+				return;
+			}
+
+			UpdateDeadDirection(targetTileX, targetTileY);
+
+			Vector2 nextTile = tilePos + mCurrentDirection;
+			mTargetTileCenter = util::SnapToTileCenter(nextTile);
+		}
+
+		if (mCurrentDirection != Vector2::Zero)
+		{
+			Vector2 move = mCurrentDirection * mSpeed * Time::DeltaTime();
+			Vector2 nextPos = pos + move;
+			Vector2 toCenter = mTargetTileCenter - nextPos;
+
+			mTransform->SetPosition(
+				((mCurrentDirection.x != 0 && fabs(toCenter.x) < fabs(move.x)) ||
+					(mCurrentDirection.y != 0 && fabs(toCenter.y) < fabs(move.y)))
+				? mTargetTileCenter : nextPos
+			);
+
+			DeadByDirection(mCurrentDirection);
+		}
+	}
+
+	void GhostScript::UpdateDeadDirection(int targetTileX, int targetTileY)
+	{
+		Vector2 tilePos = util::WorldToTile(mTargetTileCenter);
+		int idxX = static_cast<int>(tilePos.x);
+		int idxY = static_cast<int>(tilePos.y);
+
+		Vector2 bestDir = mCurrentDirection;
+		float bestScore = FLT_MAX;
+		bool  hasValid = false;
+
+		Vector2 jailCenter = Vector2((targetTileX + 0.5f) * Tile::Size.x, (targetTileY + 0.5f) * Tile::Size.y);
+
+		for (auto& dir : directions)
+		{
+			if (dir == -mCurrentDirection)
+				continue;
+
+			int nx = idxX + static_cast<int>(dir.x);
+			int ny = idxY + static_cast<int>(dir.y);
+			if (IsWall(nx, ny))
+				continue;
+
+			hasValid = true;
+			Vector2 tileCtr = Vector2((nx + 0.5f) * Tile::Size.x, (ny + 0.5f) * Tile::Size.y);
+			float score = (tileCtr - jailCenter).length();
+
+			if (score < bestScore)
+			{
+				bestScore = score;
+				bestDir = dir;
+			}
+		}
+
+		if (!hasValid)
+			bestDir = -mCurrentDirection;
+
+		mCurrentDirection = bestDir;
+	}
 }
 

@@ -4,7 +4,6 @@
 
 namespace huru
 {
-	class Collider;
 	class Animator;
 	class Transform;
 }
@@ -32,10 +31,6 @@ namespace pac
 		void		LateUpdate() override;
 		void		Render(HDC hdc) override;
 
-		void		OnCollisionEnter(Collider* other) override;
-		void		OnCollisionStay(Collider* other) override;
-		void		OnCollisionExit(Collider* other) override;
-
 	private:
 		void		HandleInput();
 
@@ -43,10 +38,6 @@ namespace pac
 		void		Dead();
 
 		void		ProcessTileNavigation();
-		Vector2		SnapToTileCenter(Vector2 tilePos);
-
-		bool		IsOnPortalTile();
-		void		TeleportToOtherPortal();
 
 		void		UpdateAnimation();
 

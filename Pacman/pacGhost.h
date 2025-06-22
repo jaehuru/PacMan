@@ -25,6 +25,5 @@ namespace pac
 
 	private:
 		Animator*			mAnimator;
-		SpriteRenderer*		mSpriteRenderer;
 	};
 }

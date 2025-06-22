@@ -12,6 +12,8 @@ namespace huru
 
 namespace pac
 {
+	class Tile;
+
 	class GhostScript : public Script
 	{
 	public:
@@ -20,6 +22,7 @@ namespace pac
 			Normal,
 			Nerf, // ÆÄ¿öÆç¸´ ¸ÔÀº »óÅÂ
 			Dead,
+			Wait
 		};
 
 		GhostScript();
@@ -30,17 +33,13 @@ namespace pac
 		void				LateUpdate() override;
 		void				Render(HDC hdc) override;
 
-		void				OnCollisionEnter(Collider* other) override;
-		void				OnCollisionStay(Collider* other) override;
-		void				OnCollisionExit(Collider* other) override;
-
 		void				SetState(eState state)	{ mState = state; }
 		eState				GetState() const		{ return mState; }
 
 		void				BeginNerf();
 
 	protected:
-		virtual void		PlayAnimByDir(const Vector2& direction) = 0;
+		virtual void		PlayAnimByDir(const Vector2& direction);
 		void				UpdateAnimation(const wstring& newAnim);
 
 		virtual void		UpdateMovement(bool isEscaping);
@@ -51,6 +50,7 @@ namespace pac
 		void				HandleNormalState();
 		void				HandleNerfState();
 		void				HandleDeadState();
+		void				HandleWaitState();
 
 		void				EndNerf();
 
@@ -58,13 +58,20 @@ namespace pac
 		bool				IsWall(int tileX, int tileY);
 
 		void				UpdateNerfTimers();
+
+		void				ConnectedPlayerInNerf();
+
+		void				DeadByDirection(const Vector2& direction);
+
+		void				UpdateDeadMovement(int targetTileX, int targetTileY);
+		void				UpdateDeadDirection(int targetTileX, int targetTileY);
+
 	protected:
 		Animator*			mAnimator;
 
 	private:
 		eState				mState;
 		Transform*			mTransform;
-		SpriteRenderer*		mSpriteRenderer;
 
 		float				mFrightenedTimer;
 		bool				mIsFlashing;
@@ -75,6 +82,9 @@ namespace pac
 		const float			FlashInterval;
 
 		float				mSpeed;
+		float				mNormalSpeed;
+		float				mNerfSpeed;
+		float				mDeadSpeed;
 
 		wstring				mCurrentAnimName;
 
@@ -86,6 +96,12 @@ namespace pac
 		const Vector2		DIR_LEFT;
 		const Vector2		DIR_RIGHT;
 		const Vector2		directions[4] = { DIR_UP, DIR_DOWN, DIR_LEFT, DIR_RIGHT };
+
+		Vector2             mJailPos;
+		float				mDeadWaitTimer;
+
+		vector<Tile*>		mPortals;
+		float				mPortalCoolTime;
 	};
 }
 

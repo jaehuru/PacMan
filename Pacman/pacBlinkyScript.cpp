@@ -51,33 +51,13 @@ namespace pac
 		GhostScript::Render(hdc);
 	}
 
-	void BlinkyScript::OnCollisionEnter(Collider* other)
-	{
-		GhostScript::OnCollisionEnter(other);
-	}
-
-	void BlinkyScript::OnCollisionStay(Collider* other)
-	{
-		GhostScript::OnCollisionStay(other);
-	}
-
-	void BlinkyScript::OnCollisionExit(Collider* other)
-	{
-		GhostScript::OnCollisionExit(other);
-	}
-
 	void BlinkyScript::PlayAnimByDir(const Vector2& direction)
 	{
-		wstring newAnim;
+		GhostScript::PlayAnimByDir(direction);
 
-		if (fabs(direction.x) > fabs(direction.y))
-		{
-			newAnim = (direction.x > 0) ? L"Blinky_Right" : L"Blinky_Left";
-		}
-		else
-		{
-			newAnim = (direction.y > 0) ? L"Blinky_Down" : L"Blinky_Up";
-		}
+		const wstring newAnim = (fabs(direction.x) > fabs(direction.y))
+			? ((direction.x > 0) ? L"Blinky_Right" : L"Blinky_Left") 
+			: ((direction.y > 0) ? L"Blinky_Down" : L"Blinky_Up");
 
 		UpdateAnimation(newAnim);
 	}

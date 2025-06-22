@@ -6,6 +6,7 @@
 #include "pacPellet.h"
 #include "pacGhost.h"
 #include "pacGhostScript.h"
+#include "pacUtility.h"
 //Engine
 #include "Helpers/huruInput.h"
 #include "Component/Transform/huruTransform.h"
@@ -49,24 +50,17 @@ namespace pac
 	void PlayerScript::Initialize()
 	{
 		mTransform = GetOwner()->GetComponent<Transform>();
-	
-		if (mAnimator == nullptr)
-		{
-			mAnimator = GetOwner()->GetComponent<Animator>();
-			if (mAnimator)
-			{
-				mAnimator->CreateAnimationByFolder(L"Move_Left", L"../Resources/img/pacman/left", Vector2::Zero, 0.1f);
-				mAnimator->CreateAnimationByFolder(L"Move_Down", L"../Resources/img/pacman/down", Vector2::Zero, 0.1f);
-				mAnimator->CreateAnimationByFolder(L"Move_Right", L"../Resources/img/pacman/right", Vector2::Zero, 0.1f);
-				mAnimator->CreateAnimationByFolder(L"Move_Up", L"../Resources/img/pacman/up", Vector2::Zero, 0.1f);
-
-				mAnimator->PlayAnimation(L"Move_Left", true);
-				mCurrentAnimName = L"Move_Left";
-			}
-		}
-
+		mAnimator = GetOwner()->GetComponent<Animator>();
 		mTileManager = GameManager::GetInstance().GetTileManager();
 		mPortals = mTileManager->GetPortalTiles();
+			
+		mAnimator->CreateAnimationByFolder(L"Move_Left", L"../Resources/img/pacman/left", Vector2::Zero, 0.1f);
+		mAnimator->CreateAnimationByFolder(L"Move_Down", L"../Resources/img/pacman/down", Vector2::Zero, 0.1f);
+		mAnimator->CreateAnimationByFolder(L"Move_Right", L"../Resources/img/pacman/right", Vector2::Zero, 0.1f);
+		mAnimator->CreateAnimationByFolder(L"Move_Up", L"../Resources/img/pacman/up", Vector2::Zero, 0.1f);
+
+		mAnimator->PlayAnimation(L"Move_Left", true);
+		mCurrentAnimName = L"Move_Left";
 	}
 
 	void PlayerScript::Update()
@@ -90,21 +84,6 @@ namespace pac
 	void PlayerScript::Render(HDC hdc)
 	{
 		Script::Render(hdc);
-	}
-
-	void PlayerScript::OnCollisionEnter(Collider* other)
-	{
-		Script::OnCollisionEnter(other);
-	}
-
-	void PlayerScript::OnCollisionStay(Collider* other)
-	{
-		Script::OnCollisionStay(other);
-	}
-
-	void PlayerScript::OnCollisionExit(Collider* other)
-	{
-		Script::OnCollisionExit(other);
 	}
 
 	void PlayerScript::HandleInput()
@@ -150,10 +129,8 @@ namespace pac
 	void PlayerScript::ProcessTileNavigation()
 	{
 		Vector2 pos = mTransform->GetPosition();
-		int idxX = static_cast<int>(pos.x / Tile::Size.x);
-		int idxY = static_cast<int>(pos.y / Tile::Size.y);
-		mCurrentTile = Vector2((float)idxX, (float)idxY);
-		Vector2 center = SnapToTileCenter(mCurrentTile);
+		mCurrentTile = util::WorldToTile(pos);
+		Vector2 center = util::SnapToTileCenter(mCurrentTile);
 
 		if ((center - pos).length() < 0.1f)
 		{
@@ -161,9 +138,9 @@ namespace pac
 
 			if (mPortalCoolTime <= 0.0f)
 			{
-				if (IsOnPortalTile())
+				if (util::IsOnPortalTile(mCurrentTile, mPortals))
 				{
-					TeleportToOtherPortal();
+					util::TeleportToOtherPortal(mCurrentTile, mTransform, mPortals);
 					mPortalCoolTime = 0.08f;
 					return;
 				}
@@ -198,37 +175,6 @@ namespace pac
 		UpdateAnimation();
 	}
 
-	Vector2 PlayerScript::SnapToTileCenter(Vector2 tilePos)
-	{
-		return Vector2
-		(
-			tilePos.x * Tile::Size.x + Tile::Size.x * 0.5f,
-			tilePos.y * Tile::Size.y + Tile::Size.y * 0.5f
-		);
-	}
-
-	bool PlayerScript::IsOnPortalTile()
-	{
-		for (Tile* portal : mPortals)
-			if (portal->GetIndex() == mCurrentTile)
-				return true;
-		return false;
-	}
-
-	void PlayerScript::TeleportToOtherPortal()
-	{
-		if (mPortals.size() != 2) return;
-
-		// 현재 포탈 인덱스 찾기
-		int current = (mPortals[0]->GetIndex() == mCurrentTile) ? 0 : 1;
-		int other = 1 - current;
-
-		// 반대 포탈 타일의 중앙 위치로 순간이동
-		Vector2 targetTile = mPortals[other]->GetIndex();
-		Vector2 targetCenter = SnapToTileCenter(targetTile);
-		mTransform->SetPosition(targetCenter);
-	}
-
 	void PlayerScript::UpdateAnimation()
 	{
 		wstring newAnim;
@@ -252,11 +198,11 @@ namespace pac
 
 	void PlayerScript::CollectedDot()
 	{
-		Vector2 playerPos = mTransform->GetPosition();
-		int idxX = static_cast<int>(playerPos.x / Tile::Size.x);
-		int idxY = static_cast<int>(playerPos.y / Tile::Size.y);
+		Vector2 playerTile = util::WorldToTile(mTransform->GetPosition());
 
-		Tile* tile = mTileManager->GetTile(idxX, idxY);
+		Tile* tile = mTileManager->
+			GetTile(static_cast<int>(playerTile.x), static_cast<int>(playerTile.y));
+
 		if (tile && tile->GetTileType() == Tile::eTileType::Path && tile->HasDot())
 		{
 			tile->SetHasDot(false);  
@@ -266,13 +212,12 @@ namespace pac
 
 	void PlayerScript::CollectedPellet()
 	{
-		Vector2 playerPos = mTransform->GetPosition();
-		int idxX = static_cast<int>(playerPos.x / Tile::Size.x);
-		int idxY = static_cast<int>(playerPos.y / Tile::Size.y);
+		Vector2 playerTile = util::WorldToTile(mTransform->GetPosition());
 
-		Tile* tile = mTileManager->GetTile(idxX, idxY);
-		
+		Tile* tile = mTileManager->
+			GetTile(static_cast<int>(playerTile.x), static_cast<int>(playerTile.y));
 		Pellet* pellet = tile->FindChildOfType<Pellet>();
+
 		if (pellet)
 		{
 			object::Destroy(pellet);
