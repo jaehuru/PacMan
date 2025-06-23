@@ -6,6 +6,7 @@
 #include "pacTileManager.h"
 #include "pacPlayerScript.h"
 #include "pacPlayer.h"
+#include "pacPlayerScript.h"
 #include "pacUtility.h"
 //Engine
 #include "Component/Transform/huruTransform.h"
@@ -17,7 +18,7 @@
 
 namespace pac
 {
-	GhostScript::GhostScript() :
+	GhostScript::GhostScript(ePacGhostType type) :
 		mAnimator(nullptr),
 		mSpawnPos(Vector2::Zero),
 		mState(eState::Normal),
@@ -41,15 +42,12 @@ namespace pac
 		DIR_RIGHT(Vector2(1, 0)),
 		mJailPos(Vector2(558.f, 236.f)),
 		mDeadWaitTimer(0.f),
-		mPortalCoolTime(0.f)
+		mPortalCoolTime(0.f),
+		mType(type)
 	{
 
 	}
 
-	GhostScript::~GhostScript()
-	{
-
-	}
 
 	void GhostScript::Initialize()
 	{
@@ -160,19 +158,6 @@ namespace pac
 		PlayAnimByDir(mCurrentDirection);
 	}
 
-	Vector2 GhostScript::GetPlayerPosition()
-	{
-		Player* pacman = GameManager::GetInstance().GetPlayer();
-		PlayerScript* script = pacman->GetComponent<PlayerScript>();
-		return script->GetOwner()->GetComponent<Transform>()->GetPosition();
-	}
-
-	bool GhostScript::IsWall(int tileX, int tileY)
-	{
-		Tile* tile = GameManager::GetInstance().GetTileManager()->GetTile(tileX, tileY);
-		return (!tile || tile->GetTileType() == Tile::eTileType::Wall);
-	}
-
 	void GhostScript::UpdateMovement(bool isEscaping)
 	{
 		Vector2 pos = mTransform->GetPosition();
@@ -224,9 +209,11 @@ namespace pac
 
 	void GhostScript::UpdateDirection(bool isEscaping)
 	{
-		Vector2 playerPos = GetPlayerPosition();
-		Vector2 tilePos = util::WorldToTile(mTargetTileCenter);
+		Player* player = GameManager::GetInstance().GetPlayer();
+		Vector2 playerPos = player->GetComponent<PlayerScript>()->GetCurrentPosition();
+		Vector2 targetPos = GetTargetPosition(playerPos);
 
+		Vector2 tilePos = util::WorldToTile(mTargetTileCenter);
 		int idxX = static_cast<int>(tilePos.x);
 		int idxY = static_cast<int>(tilePos.y);
 
@@ -248,7 +235,7 @@ namespace pac
 			hasValid = true;
 
 			Vector2 tileCenter = Vector2((nx + 0.5f) * Tile::Size.x, (ny + 0.5f) * Tile::Size.y);
-			float score = (tileCenter - playerPos).length();
+			float score = (tileCenter - targetPos).length();
 
 			if (isEscaping)
 			{
@@ -264,6 +251,19 @@ namespace pac
 			bestDir = -mCurrentDirection;
 
 		mCurrentDirection = bestDir;
+	}
+
+	Vector2 GhostScript::GetPlayerPosition()
+	{
+		Player* pacman = GameManager::GetInstance().GetPlayer();
+		PlayerScript* script = pacman->GetComponent<PlayerScript>();
+		return script->GetOwner()->GetComponent<Transform>()->GetPosition();
+	}
+
+	bool GhostScript::IsWall(int tileX, int tileY)
+	{
+		Tile* tile = GameManager::GetInstance().GetTileManager()->GetTile(tileX, tileY);
+		return (!tile || tile->GetTileType() == Tile::eTileType::Wall);
 	}
 
 	void GhostScript::PlayAnimByDir(const Vector2& direction)

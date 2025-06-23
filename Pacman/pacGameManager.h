@@ -41,6 +41,7 @@ namespace pac
 
         void        DecreaseDotCount();
 
+
         graphics::Texture*      GetSpriteTexture() const        { return mSpriteTexture; }
         TileManager*            GetTileManager() const          { return mTileManager; }
         graphics::Texture*      GetDotTexture() const           { return mDotTexture; }
@@ -50,6 +51,7 @@ namespace pac
         Player*                 GetPlayer() const               { return mPlayer; }
         int                     GetLife() const                 { return mLife; }
         int                     GetRemainingDotCount() const    { return mRemainingDotCount; }
+        Ghost*                  GetGhostByType(ePacGhostType type);
 
     private:
         GameManager() = default;

@@ -1,22 +1,14 @@
 //Pacman
 #include "pacBlinkyScript.h"
-#include "pacGhost.h"
-#include "pacPlayer.h"
-#include "pacPlayerScript.h"
-#include "pacGameManager.h"
+#include "pacEnum.h"
 //Engine
-#include "Component/Transform/huruTransform.h"
 #include "Component/Animator/huruAnimator.h"
-#include "Component/SpriteRenderer/huruSpriteRenderer.h"
+
 
 namespace pac
 {
-	BlinkyScript::BlinkyScript()
-	{
-
-	}
-
-	BlinkyScript::~BlinkyScript()
+	BlinkyScript::BlinkyScript() :
+		GhostScript(ePacGhostType::Blinky)
 	{
 
 	}
@@ -35,21 +27,6 @@ namespace pac
 
 			mAnimator->PlayAnimation(L"Blinky_Left", true);
 		}
-	}
-
-	void BlinkyScript::Update()
-	{
-		GhostScript::Update();
-	}
-
-	void BlinkyScript::LateUpdate()
-	{
-		GhostScript::LateUpdate();
-	}
-
-	void BlinkyScript::Render(HDC hdc)
-	{
-		GhostScript::Render(hdc);
 	}
 
 	void BlinkyScript::PlayAnimByDir(const Vector2& direction)

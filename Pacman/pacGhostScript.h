@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component/Script/huruScript.h"
+#include "pacEnum.h"
 
 namespace huru
 {
@@ -25,27 +26,26 @@ namespace pac
 			Wait
 		};
 
-		GhostScript();
-		virtual ~GhostScript();
+		GhostScript(ePacGhostType type);
+		virtual ~GhostScript() = default;
 
 		void				Initialize() override;
 		void				Update() override;
 		void				LateUpdate() override;
 		void				Render(HDC hdc) override;
 
-		void				SetState(eState state)	{ mState = state; }
-		eState				GetState() const		{ return mState; }
-
 		void				BeginNerf();
 
 		void				Respawn();
+
+		void				SetState(eState state)	{ mState = state; }
+		eState				GetState() const		{ return mState; }
+		ePacGhostType		GetGhostType() const	{ return mType; }
 
 	protected:
 		virtual void		PlayAnimByDir(const Vector2& direction);
 		void				UpdateAnimation(const wstring& newAnim);
 
-		virtual void		UpdateMovement(bool isEscaping);
-		virtual void		UpdateDirection(bool isEscaping);
 		virtual Vector2		GetTargetPosition(const Vector2& playerPos) { return playerPos; }
 
 	private:
@@ -55,6 +55,9 @@ namespace pac
 		void				HandleWaitState();
 
 		void				EndNerf();
+
+		void				UpdateMovement(bool isEscaping);
+		void				UpdateDirection(bool isEscaping);
 
 		Vector2				GetPlayerPosition();
 		bool				IsWall(int tileX, int tileY);
@@ -70,12 +73,12 @@ namespace pac
 
 	protected:
 		Animator*			mAnimator;
+		Transform*			mTransform;
 
 		Vector2				mSpawnPos;
 
 	private:
 		eState				mState;
-		Transform*			mTransform;
 
 		float				mFrightenedTimer;
 		bool				mIsFlashing;
@@ -106,6 +109,7 @@ namespace pac
 
 		vector<Tile*>		mPortals;
 		float				mPortalCoolTime;
+
+		ePacGhostType		mType;
 	};
 }
-

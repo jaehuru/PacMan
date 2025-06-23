@@ -8,16 +8,12 @@ namespace pac
 	{
 	public:
 		BlinkyScript();
-		virtual ~BlinkyScript();
+		~BlinkyScript() = default;
 
-		void				Initialize() override;
-		void				Update() override;
-		void				LateUpdate() override;
-		void				Render(HDC hdc) override;
+		void	Initialize() override;
 
 	protected:
-		void				PlayAnimByDir(const Vector2& direction) override;
-
+		void	PlayAnimByDir(const Vector2& direction) override;
 	};
 }
 

@@ -89,6 +89,11 @@ namespace pac
 		Script::Render(hdc);
 	}
 
+	Vector2 PlayerScript::GetCurrentPosition() const
+	{
+		return mTransform->GetPosition();
+	}
+
 	void PlayerScript::HandleInput()
 	{
 		if (Input::GetKey(eKeyCode::Up))			mNextDir = DIR_UP;

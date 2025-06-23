@@ -31,6 +31,9 @@ namespace pac
 		void		LateUpdate() override;
 		void		Render(HDC hdc) override;
 
+		Vector2		GetCurrentPosition() const;
+		Vector2		GetCurrentDirection() const		{ return mCurrentDir; }
+
 	private:
 		void		HandleInput();
 

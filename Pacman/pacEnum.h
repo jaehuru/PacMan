@@ -16,11 +16,20 @@ namespace pac
         Max = huru::enums::eLayerType::Max
     };
 
-    enum class ePacUItype : int
+    enum class ePacUItype
     {
         Button = huru::enums::eUIType::Button,
         HUD = huru::enums::eUIType::HUD,
         GameOver,
         End = huru::enums::eUIType::End,
+    };
+
+    enum class ePacGhostType
+    {
+        Blinky,
+        Clyde,
+        Inky,
+        Pinky,
+        None
     };
 }

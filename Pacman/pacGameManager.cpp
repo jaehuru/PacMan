@@ -93,4 +93,15 @@ namespace pac
 	{
 		mRemainingDotCount--;
 	}
+
+	Ghost* GameManager::GetGhostByType(ePacGhostType type)
+	{
+		for (Ghost* ghost : mGhosts)
+		{
+			GhostScript* ghostScript = ghost->GetComponent<GhostScript>();
+			if (ghostScript && ghostScript->GetGhostType() == type)
+				return ghost;
+		}
+		return nullptr;
+	}
 }

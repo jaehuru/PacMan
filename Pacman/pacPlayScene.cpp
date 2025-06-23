@@ -4,6 +4,9 @@
 #include "pacPlayer.h"
 #include "pacGhost.h"
 #include "pacBlinkyScript.h"
+#include "pacClydeScript.h"
+#include "pacInkyScript.h"
+#include "pacPinkyScript.h"
 // Engine 
 #include "Object/huruObject.h"
 #include "UI/huruUIManager.h"
@@ -21,6 +24,13 @@ namespace pac
 		//Ghost
 		Ghost* blinky = object::Instantiate<Ghost>(ToEngineLayerType(ePacLayerType::Ghost), (Vector2(558.f, 210.f)));
 		blinky->AddComponent<BlinkyScript>();
+		Ghost* clyde = object::Instantiate<Ghost>(ToEngineLayerType(ePacLayerType::Ghost), (Vector2(546.f, 234.f)));
+		clyde->AddComponent<ClydeScript>();
+		Ghost* inky = object::Instantiate<Ghost>(ToEngineLayerType(ePacLayerType::Ghost), (Vector2(570.f, 234.f)));
+		inky->AddComponent<InkyScript>();
+		Ghost* pinky = object::Instantiate<Ghost>(ToEngineLayerType(ePacLayerType::Ghost), (Vector2(558.f, 234.f)));
+		pinky->AddComponent<PinkyScript>();
+
 
 		//HUD
 		UIManager::Push(eUIType::HUD);
