@@ -123,6 +123,12 @@
     <ClInclude Include="pacHUD.h">
       <Filter>public\UI</Filter>
     </ClInclude>
+    <ClInclude Include="pacVictoryScene.h">
+      <Filter>public\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="pacGameOverUI.h">
+      <Filter>public\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -175,6 +181,12 @@
       <Filter>private\Common</Filter>
     </ClCompile>
     <ClCompile Include="pacHUD.cpp">
+      <Filter>private\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="pacVictoryScene.cpp">
+      <Filter>private\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="pacGameOverUI.cpp">
       <Filter>private\UI</Filter>
     </ClCompile>
   </ItemGroup>

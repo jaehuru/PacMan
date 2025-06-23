@@ -213,7 +213,8 @@ namespace pac
 
 		if (tile && tile->GetTileType() == Tile::eTileType::Path && tile->HasDot())
 		{
-			tile->SetHasDot(false);  
+			tile->SetHasDot(false);
+			GameManager::GetInstance().DecreaseDotCount();
 		}
 	}
 

@@ -17,17 +17,6 @@ extern Application application;
 
 namespace pac
 {
-
-	ToolScene::ToolScene()
-	{
-
-	}
-
-	ToolScene::~ToolScene()
-	{
-
-	}
-
 	void ToolScene::Initialize()
 	{
 		GameObject* camera = object::Instantiate<GameObject>(ToEngineLayerType(ePacLayerType::Particle), Vector2(580.0f, 258.0f));

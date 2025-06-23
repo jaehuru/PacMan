@@ -39,14 +39,17 @@ namespace pac
         void        OnPlayerDead();
         void        ResetGhosts();
 
-        graphics::Texture*      GetSpriteTexture() const    { return mSpriteTexture; }
-        TileManager*            GetTileManager() const      { return mTileManager; }
-        graphics::Texture*      GetDotTexture() const       { return mDotTexture; }
-        graphics::Texture*      GetPelletTexture() const    { return mPelletTexture; }
-        const vector<Ghost*>&   GetGhosts() const           { return mGhosts; }
-        void                    SetPlayer(Player* player)   { mPlayer = player; }
-        Player*                 GetPlayer() const           { return mPlayer; }
-        int                     GetLife() const             { return mLife; }
+        void        DecreaseDotCount();
+
+        graphics::Texture*      GetSpriteTexture() const        { return mSpriteTexture; }
+        TileManager*            GetTileManager() const          { return mTileManager; }
+        graphics::Texture*      GetDotTexture() const           { return mDotTexture; }
+        graphics::Texture*      GetPelletTexture() const        { return mPelletTexture; }
+        const vector<Ghost*>&   GetGhosts() const               { return mGhosts; }
+        void                    SetPlayer(Player* player)       { mPlayer = player; }
+        Player*                 GetPlayer() const               { return mPlayer; }
+        int                     GetLife() const                 { return mLife; }
+        int                     GetRemainingDotCount() const    { return mRemainingDotCount; }
 
     private:
         GameManager() = default;
@@ -64,5 +67,8 @@ namespace pac
         vector<Ghost*>          mGhosts;
 
         int                     mLife = 3;
+
+        int                     mTotalDotCount = 0;
+        int                     mRemainingDotCount = 0;
     };
 }

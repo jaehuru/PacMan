@@ -1,27 +1,20 @@
 #pragma once
 
 #include "Scene/huruScene.h"
-#include "Common/CommonInclude.h"
+
 
 namespace pac
 {
-	class Player;
-
 	class PlayScene : public Scene
 	{
 	public:
-		PlayScene();
-		~PlayScene();
+		PlayScene() = default;
+		~PlayScene() = default;
 
 		void	Initialize() override;
 		void	Update() override;
-		void	LateUpdate() override;
-		void	Render(HDC hdc) override;
-
-		void	OnEnter() override;
-		void	OnExit() override;
 
 	private:
-		Player* mPlayer;
+		int		mLife = 0;
 	};
 }

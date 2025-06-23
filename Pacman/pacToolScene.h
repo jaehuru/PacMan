@@ -10,8 +10,8 @@ namespace pac
 	class ToolScene : public Scene
 	{
 	public:
-		ToolScene();
-		~ToolScene();
+		ToolScene() = default;
+		~ToolScene() = default;
 
 		void	Initialize() override;
 		void	Update() override;

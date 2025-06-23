@@ -7,16 +7,6 @@
 
 namespace pac
 {
-	HUD::HUD()
-	{
-
-	}
-
-	HUD::~HUD()
-	{
-
-	}
-
 	void HUD::OnInit()
 	{
 		mLifeIcons.push_back(Resources::Find<graphics::Texture>(L"Life0"));

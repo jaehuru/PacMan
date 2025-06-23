@@ -11,16 +11,6 @@
 
 namespace pac
 {
-	PlayScene::PlayScene()
-	{
-
-	}
-
-	PlayScene::~PlayScene()
-	{
-
-	}
-
 	void PlayScene::Initialize()
 	{
 		GameManager::GetInstance().LoadMap();
@@ -34,30 +24,26 @@ namespace pac
 
 		//HUD
 		UIManager::Push(eUIType::HUD);
+
+		Scene::Initialize();
 	}
 
 	void PlayScene::Update()
 	{
+		mLife = GameManager::GetInstance().GetLife();
+		if (mLife <= 0)
+		{
+			UIManager::Push(ToEngineUIType(ePacUItype::GameOver));
+			return;
+		}
+
+		if (GameManager::GetInstance().GetRemainingDotCount() == 0)
+		{
+			SceneManager::GetActiveScene()->Destroy();
+			UIManager::Pop(eUIType::HUD);
+			SceneManager::LoadScene(L"VictoryScene");
+		}
+
 		Scene::Update();
-	}
-
-	void PlayScene::LateUpdate()
-	{
-		Scene::LateUpdate();
-	}
-
-	void PlayScene::Render(HDC hdc)
-	{
-		Scene::Render(hdc);
-	}
-
-	void PlayScene::OnEnter()
-	{
-		Scene::OnEnter();
-	}
-
-	void PlayScene::OnExit()
-	{
-		Scene::OnExit();
 	}
 }

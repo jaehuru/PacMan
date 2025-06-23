@@ -16,6 +16,7 @@ namespace pac
     public:
         void        LoadMapFile(const wstring& filePath, graphics::Texture* texture);
         void        Clear();
+        int         CountTotalDots();
 
         Tile*                   GetTile(int x, int y);
         const vector<Tile*>&    GetTileMap()            const { return mTileMap; }

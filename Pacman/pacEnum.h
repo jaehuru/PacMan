@@ -4,15 +4,23 @@
 
 namespace pac
 {
-    enum class ePacLayerType : int
+    enum class ePacLayerType
     {
-        None = (int)::huru::enums::eLayerType::None,
+        None = huru::enums::eLayerType::None,
         Background,
         Item,
         Ghost,
         Player,
         Tile,
         Particle,
-        Max = (int)::huru::enums::eLayerType::Max
+        Max = huru::enums::eLayerType::Max
+    };
+
+    enum class ePacUItype : int
+    {
+        Button = huru::enums::eUIType::Button,
+        HUD = huru::enums::eUIType::HUD,
+        GameOver,
+        End = huru::enums::eUIType::End,
     };
 }

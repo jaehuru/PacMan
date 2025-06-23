@@ -100,6 +100,20 @@ namespace pac
 		mPortalTiles.clear();
 	}
 
+	int TileManager::CountTotalDots()
+	{
+		int count = 0;
+		for (Tile* tile : mTileMap)
+		{
+			if (tile && tile->GetTileType() == Tile::eTileType::Path && tile->HasDot())
+			{
+				count++;
+			}
+		}
+
+		return count;
+	}
+
 	Tile* TileManager::GetTile(int x, int y)
 	{
 		if (x < 0 || y < 0 || x >= define::MaxMapWidth || y >= define::MaxMapHeight)

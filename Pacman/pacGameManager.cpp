@@ -2,10 +2,12 @@
 #include "pacGameManager.h"
 #include "pacPlayScene.h"
 #include "pacToolScene.h"
+#include "pacVictoryScene.h"
 #include "pacTileManager.h"
 #include "pacGhostScript.h"
 #include "pacGhost.h"
 #include "pacHUD.h"
+#include "pacGameOverUI.h"
 //Engine
 #include "Resource/huruResources.h" 
 #include "Scene/huruSceneManager.h"
@@ -21,6 +23,10 @@ namespace pac
 		LoadScenes();
 
 		UIManager::RegisterUIFactory(eUIType::HUD, []() { return new HUD(); });
+		UIManager::RegisterUIFactory(ToEngineUIType(ePacUItype::GameOver), []() { return new GameOverUI(); });
+
+		mTotalDotCount = mTileManager->CountTotalDots();
+		mRemainingDotCount = mTotalDotCount;
 	}
 
 	void GameManager::Release()
@@ -49,6 +55,7 @@ namespace pac
 	{
 		SceneManager::CreateScene<PlayScene>(L"PlayScene");
 		SceneManager::CreateScene<ToolScene>(L"ToolScene");
+		SceneManager::CreateScene<VictoryScene>(L"VictoryScene");
 
 		SceneManager::LoadScene(L"PlayScene");
 		// 씬 등록 및 초기화 코드
@@ -80,5 +87,10 @@ namespace pac
 			GhostScript* ghostScript = ghost->GetComponent<GhostScript>();
 			ghostScript->Respawn();
 		}
+	}
+
+	void GameManager::DecreaseDotCount()
+	{
+		mRemainingDotCount--;
 	}
 }

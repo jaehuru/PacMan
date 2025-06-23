@@ -8,8 +8,8 @@ namespace pac
 	class HUD : public UIHUD
 	{
 	public:
-		HUD();
-		~HUD();
+		HUD() = default;
+		~HUD() = default;
 
 		void	OnInit()			override;
 		void	OnRender(HDC hdc)	override;
