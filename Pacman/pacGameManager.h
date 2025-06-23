@@ -36,6 +36,9 @@ namespace pac
         void        LoadMap();
         void        RegisterGhost(Ghost* ghost);
 
+        void        OnPlayerDead();
+        void        ResetGhosts();
+
         graphics::Texture*      GetSpriteTexture() const    { return mSpriteTexture; }
         TileManager*            GetTileManager() const      { return mTileManager; }
         graphics::Texture*      GetDotTexture() const       { return mDotTexture; }
@@ -43,6 +46,7 @@ namespace pac
         const vector<Ghost*>&   GetGhosts() const           { return mGhosts; }
         void                    SetPlayer(Player* player)   { mPlayer = player; }
         Player*                 GetPlayer() const           { return mPlayer; }
+        int                     GetLife() const             { return mLife; }
 
     private:
         GameManager() = default;
@@ -58,5 +62,7 @@ namespace pac
         graphics::Texture*      mPelletTexture = nullptr;
         Player*                 mPlayer = nullptr;
         vector<Ghost*>          mGhosts;
+
+        int                     mLife = 3;
     };
 }

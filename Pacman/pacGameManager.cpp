@@ -3,10 +3,14 @@
 #include "pacPlayScene.h"
 #include "pacToolScene.h"
 #include "pacTileManager.h"
+#include "pacGhostScript.h"
+#include "pacGhost.h"
+#include "pacHUD.h"
 //Engine
 #include "Resource/huruResources.h" 
 #include "Scene/huruSceneManager.h"
 #include "Resource/huruTexture.h"
+#include "UI/huruUIManager.h"
 
 namespace pac
 {
@@ -15,6 +19,8 @@ namespace pac
 		mTileManager = new TileManager();
 		LoadResources();
 		LoadScenes();
+
+		UIManager::RegisterUIFactory(eUIType::HUD, []() { return new HUD(); });
 	}
 
 	void GameManager::Release()
@@ -31,6 +37,12 @@ namespace pac
 		// Dot & Pellet
 		mDotTexture = Resources::Load<graphics::Texture>(L"Dot", L"../Resources/img/item/dot.png");
 		mPelletTexture = Resources::Load<graphics::Texture>(L"Pellet", L"../Resources/img/item/pellet.png");
+
+		//LifeIcon
+		Resources::Load<graphics::Texture>(L"Life0", L"../Resources/img/lives_0.png");
+		Resources::Load<graphics::Texture>(L"Life1", L"../Resources/img/lives_1.png");
+		Resources::Load<graphics::Texture>(L"Life2", L"../Resources/img/lives_2.png");
+		Resources::Load<graphics::Texture>(L"Life3", L"../Resources/img/lives_3.png");
 	}
 
 	void GameManager::LoadScenes()
@@ -50,5 +62,23 @@ namespace pac
 	void GameManager::RegisterGhost(Ghost* ghost)
 	{
 		mGhosts.push_back(ghost);
+	}
+
+	void GameManager::OnPlayerDead()
+	{
+		mLife--;
+		if (mLife <= 0)
+		{
+			// 게임 오버 처리 (나중에)
+		}
+	}
+
+	void GameManager::ResetGhosts()
+	{
+		for (Ghost* ghost : mGhosts)
+		{
+			GhostScript* ghostScript = ghost->GetComponent<GhostScript>();
+			ghostScript->Respawn();
+		}
 	}
 }

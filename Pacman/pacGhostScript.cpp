@@ -18,9 +18,10 @@
 namespace pac
 {
 	GhostScript::GhostScript() :
+		mAnimator(nullptr),
+		mSpawnPos(Vector2::Zero),
 		mState(eState::Normal),
 		mTransform(nullptr),
-		mAnimator(nullptr),
 		mFrightenedTimer(0.f),
 		mIsFlashing(false),
 		mFlashTimer(0.f),
@@ -327,8 +328,6 @@ namespace pac
 
 		if (pTile == gTile)
 		{
-			Sleep(300);
-
 			mState = eState::Dead;
 			mSpeed = mDeadSpeed;
 			DeadByDirection(mCurrentDirection);
@@ -423,6 +422,16 @@ namespace pac
 			bestDir = -mCurrentDirection;
 
 		mCurrentDirection = bestDir;
+	}
+
+	void GhostScript::Respawn()
+	{
+		mTransform->SetPosition(mSpawnPos);
+		mState = eState::Normal;
+		mSpeed = mNormalSpeed;
+		mCurrentDirection = DIR_UP;
+		mTargetTileCenter = util::SnapToTileCenter(util::WorldToTile(mTransform->GetPosition()));
+		PlayAnimByDir(mCurrentDirection);
 	}
 }
 

@@ -23,6 +23,7 @@ namespace pac
 
 	void BlinkyScript::Initialize()
 	{
+		mSpawnPos = Vector2(558.f, 210.f);
 		GhostScript::Initialize();
 
 		if (mAnimator)

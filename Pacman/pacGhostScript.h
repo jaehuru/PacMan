@@ -38,6 +38,8 @@ namespace pac
 
 		void				BeginNerf();
 
+		void				Respawn();
+
 	protected:
 		virtual void		PlayAnimByDir(const Vector2& direction);
 		void				UpdateAnimation(const wstring& newAnim);
@@ -68,6 +70,8 @@ namespace pac
 
 	protected:
 		Animator*			mAnimator;
+
+		Vector2				mSpawnPos;
 
 	private:
 		eState				mState;

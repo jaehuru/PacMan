@@ -58,6 +58,7 @@ namespace pac
 		mAnimator->CreateAnimationByFolder(L"Move_Down", L"../Resources/img/pacman/down", Vector2::Zero, 0.1f);
 		mAnimator->CreateAnimationByFolder(L"Move_Right", L"../Resources/img/pacman/right", Vector2::Zero, 0.1f);
 		mAnimator->CreateAnimationByFolder(L"Move_Up", L"../Resources/img/pacman/up", Vector2::Zero, 0.1f);
+		mAnimator->CreateAnimationByFolder(L"Dead", L"../Resources/img/pacman/dead", Vector2::Zero, 0.2f);
 
 		mAnimator->PlayAnimation(L"Move_Left", true);
 		mCurrentAnimName = L"Move_Left";
@@ -70,6 +71,8 @@ namespace pac
 			Dead();
 			return;
 		}
+
+		ConnetedGhost();
 
 		HandleInput();
 		ProcessTileNavigation();
@@ -123,7 +126,12 @@ namespace pac
 
 	void PlayerScript::Dead()
 	{
-
+		if (mState == eState::Dead)
+		{
+			if (mAnimator->IsComplete())
+				Respawn();
+			return;
+		}
 	}
 
 	void PlayerScript::ProcessTileNavigation()
@@ -206,7 +214,6 @@ namespace pac
 		if (tile && tile->GetTileType() == Tile::eTileType::Path && tile->HasDot())
 		{
 			tile->SetHasDot(false);  
-			// TODO: 점수 올리기, 사운드 재생 등 추가 가능
 		}
 	}
 
@@ -233,7 +240,42 @@ namespace pac
 				}
 			}
 		}
+	}
 
-		
+	void PlayerScript::ConnetedGhost()
+	{
+		const vector<Ghost*> ghosts = GameManager::GetInstance().GetGhosts();
+
+		for (auto ghost : ghosts)
+		{
+			GhostScript* ghostScript = ghost->GetComponent<GhostScript>();
+
+			if (ghostScript->GetState() != GhostScript::eState::Normal)
+				continue;
+
+			Vector2 ghostTile = util::WorldToTile(ghost->GetComponent<Transform>()->GetPosition());
+			Vector2 playerTile = util::WorldToTile(mTransform->GetPosition());
+
+			if (ghostTile == playerTile)
+			{
+				mState = eState::Dead;
+				mAnimator->PlayAnimation(L"Dead", false);
+				GameManager::GetInstance().OnPlayerDead();
+				break;
+			}
+		}
+	}
+
+	void PlayerScript::Respawn()
+	{
+		mState = eState::Alive;
+		mAnimator->PlayAnimation(L"Move_Left", true);
+		mCurrentAnimName = L"Move_Left";
+
+		mTransform->SetPosition(Vector2(558.f, 258.f));
+		mCurrentDir = Vector2::Zero;
+		mNextDir = Vector2::Zero;
+
+		GameManager::GetInstance().ResetGhosts();
 	}
 }

@@ -186,6 +186,7 @@
     <ClInclude Include="pacGhostScript.h" />
     <ClInclude Include="pacInkyScript.h" />
     <ClInclude Include="Pacman.h" />
+    <ClInclude Include="pacHUD.h" />
     <ClInclude Include="pacPellet.h" />
     <ClInclude Include="pacPinkyScript.h" />
     <ClInclude Include="pacPlayer.h" />
@@ -207,6 +208,7 @@
     <ClCompile Include="pacGhost.cpp" />
     <ClCompile Include="pacGhostScript.cpp" />
     <ClCompile Include="pacInkyScript.cpp" />
+    <ClCompile Include="pacHUD.cpp" />
     <ClCompile Include="pacPellet.cpp" />
     <ClCompile Include="pacPinkyScript.cpp" />
     <ClCompile Include="pacPlayer.cpp" />

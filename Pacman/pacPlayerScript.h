@@ -45,6 +45,9 @@ namespace pac
 		void		CollectedDot();
 		void		CollectedPellet();
 
+		void		ConnetedGhost();
+		void		Respawn();
+
 	private:
 		Animator*		mAnimator;
 		eState			mState;

@@ -6,6 +6,7 @@
 #include "pacBlinkyScript.h"
 // Engine 
 #include "Object/huruObject.h"
+#include "UI/huruUIManager.h"
 
 
 namespace pac
@@ -30,6 +31,9 @@ namespace pac
 		//Ghost
 		Ghost* blinky = object::Instantiate<Ghost>(ToEngineLayerType(ePacLayerType::Ghost), (Vector2(558.f, 210.f)));
 		blinky->AddComponent<BlinkyScript>();
+
+		//HUD
+		UIManager::Push(eUIType::HUD);
 	}
 
 	void PlayScene::Update()

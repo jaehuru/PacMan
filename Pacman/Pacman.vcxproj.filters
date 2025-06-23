@@ -46,6 +46,12 @@
     <Filter Include="private\Common">
       <UniqueIdentifier>{14059afd-05bb-426c-aa4c-584103fa0705}</UniqueIdentifier>
     </Filter>
+    <Filter Include="public\UI">
+      <UniqueIdentifier>{41e8d254-d7d3-4050-8ade-c4211e30ceeb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="private\UI">
+      <UniqueIdentifier>{8f333d69-c5dd-451a-919f-efd6b7444116}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource.h">
@@ -114,6 +120,9 @@
     <ClInclude Include="pacUtility.h">
       <Filter>public\Common</Filter>
     </ClInclude>
+    <ClInclude Include="pacHUD.h">
+      <Filter>public\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -164,6 +173,9 @@
     </ClCompile>
     <ClCompile Include="pacUtility.cpp">
       <Filter>private\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="pacHUD.cpp">
+      <Filter>private\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
