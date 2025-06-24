@@ -185,11 +185,11 @@ namespace pac
 			Vector2 prevDir = mCurrentDirection;
 			UpdateDirection(isEscaping);
 
-			if (mCurrentDirection != prevDir && mState == eState::Normal)
-				PlayAnimByDir(mCurrentDirection);
-
 			Vector2 nextTile = tilePos + mCurrentDirection;
 			mTargetTileCenter = util::SnapToTileCenter(nextTile);
+
+			if (mCurrentDirection != prevDir && mState == eState::Normal)
+				PlayAnimByDir(mCurrentDirection);
 		}
 
 		if (mCurrentDirection == Vector2::Zero)
