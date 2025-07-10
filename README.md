@@ -106,7 +106,7 @@ HUD, GameOverUI, Define, Enum, Scene 클래스 등등..
 # About Development
 
 - **개발 중 주요 버그 및 이슈 기록**
-  [🐞 Debug Notes & Issues](https://github.com/jaehuru/Pacman/issues)
+[🐞 Debug Notes & Issues](https://github.com/jaehuru/Pacman/issues)
 
 ---
 
