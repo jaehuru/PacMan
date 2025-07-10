@@ -2,7 +2,7 @@
 
 # Project Description
 
-[자체 제작한 Win32 기반 2D 게임 엔진](https://github.com/jaehuru/JaehuruEngine)을 활용하여 클래식 게임 **팩맨(Pac-Man)** 을 구현합니다.  
+[자체 제작한 Win32 기반 2D 게임 엔진](https://github.com/jaehuru/JaehuruEngine_Core)을 활용하여 클래식 게임 **팩맨(Pac-Man)** 을 구현합니다.  
 게임 구조 설계, AI 상태머신 구현, 타일 기반 맵 로직, 간단한 UI 시스템을 통합하는 것을 목표로 합니다.
 
 ## Development Environment
